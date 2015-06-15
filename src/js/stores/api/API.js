@@ -1,4 +1,4 @@
-var ClientID = require('./ClientID');
+var ClientID = require('../../components/ClientID');
 var EventEmitter = require('events').EventEmitter;
 
 var request = require('request');

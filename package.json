@@ -1,7 +1,7 @@
 {
-  "name": "digging-words",
+  "name": "book-keeper",
   "version": "0.0.1",
-  "description": "diggin words",
+  "description": "see words as beautiful as it is on web.",
   "main": "App.js",
   "dependencies": {
     "asap": "^2.0.3",
@@ -18,7 +18,8 @@
     "rx-lite": "^2.5.2",
     "tinytinycolor": "0.0.3",
     "utf8": "^2.1.0",
-    "request": "^2.57.0"
+    "request": "^2.57.0",
+    "htmlparser": "1.7.7 "
   },
   "devDependencies": {
     "babel-eslint": "^3.1.7",
