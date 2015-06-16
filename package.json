@@ -19,7 +19,7 @@
     "tinytinycolor": "0.0.3",
     "utf8": "^2.1.0",
     "request": "^2.57.0",
-    "htmlparser": "1.7.7 "
+    "to-markdown": "^1.2.1"
   },
   "devDependencies": {
     "babel-eslint": "^3.1.7",
