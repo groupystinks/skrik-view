@@ -9,9 +9,8 @@ var pendingRequests = [];
 
 
 var dataDir = path.dirname(path.dirname(path.dirname(path.dirname(
-              path.dirname(require.main.filename))))) + '/data/';
+              path.dirname(require.main.filename))))) + '/data';
 
-console.log(dataDir);
 
 RSVP.on('error', function(error) {
   console.error(error, error.stack);
@@ -57,6 +56,11 @@ function executeHTTPRequest(option) {
   });
 }
 
+/*
+* TODO
+* There's no local on github
+* Need to modify readFile method
+*/
 function executeLocalRequest(options) {
   return new RSVP.Promise((resolve, reject) => {
     var result = ''

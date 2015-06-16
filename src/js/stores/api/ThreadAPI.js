@@ -16,6 +16,7 @@ var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
               path.dirname(require.main.filename)))));
 
 
+// markdown source
 (function getByChapter(options: {bookname: string, chapter: number}) {
   return API.wrap(() => {
     return API.executeLocalRequest(
@@ -29,6 +30,7 @@ var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
 })(options);
 
 function list() {}
+
 
 function _turnToMarkdown(sourceHtml, bookname, author) {
   var rawHTML = ''
