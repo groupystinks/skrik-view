@@ -77,10 +77,27 @@ function executeLocalRequest(options) {
   });
 }
 
+function extractMeta(options) {
+  return new RSVP.Promise((resolve, reject) => {
+    var result = ''
+    var pathname = path.join(dataDir, options.bookname, 'INFO.md')
+    fs.readFile(pathname, function(err, data) {
+      result += data;
+
+      if (err) {
+        reject(err);
+      };
+
+      resolve(result);
+    });
+  });
+}
+
 
 module.exports = {
   executeHTTPRequest,
   executeLocalRequest,
+  extractMeta,
   wrap,
   resolvePendingRequests,
 };

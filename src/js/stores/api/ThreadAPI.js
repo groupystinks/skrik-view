@@ -16,18 +16,39 @@ var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
               path.dirname(require.main.filename)))));
 
 
+// [debug] wrap psudo API chapter.
+function _psudoChapterObject(markdown: string, options: {bookname: string, chapter: number}) {
+  // match markdown metadata pattern like => author: James Joyce
+  var mdMetaPattern = new RegExp(/^(^[A-Z][\w\s]+): ([\w\s-,]+)\b$/, 'gm');
+  return API.extractMeta(
+    {bookname: options.bookname}
+  ).then(meta => {
+    var myArray
+    var result = {};
+    while((myArray = mdMetaPattern.exec(meta)) !== null) {
+      myArray[1] = _.camelCase(myArray[1]);
+      result[myArray[1]] = myArray[2]
+    }
+    result['markdown'] = markdown;
+    result['chapter'] = options.chapter;
+    return result
+  });
+}
+
+
 // markdown source
-(function getByChapter(options: {bookname: string, chapter: number}) {
+function getByChapter(options: {bookname: string, chapter: number}) {
   return API.wrap(() => {
     return API.executeLocalRequest(
       {bookname: options.bookname,
         chapter: 'chapter ' + options.chapter}
-    ).then(result => {
-      //
-      console.log(result)
+    ).then(markdown => {
+      _psudoChapterObject(markdown, options).then(result => {
+        return result;
+      });
     });
   });
-})(options);
+}
 
 function list() {}
 
