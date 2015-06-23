@@ -8,61 +8,48 @@ var CHANGE_EVENT = 'change';
 class BaseStore {
   constructor() {
     this._emitter = new EventEmitter();
+
+    // subscribe 'dispatch' event from Dispatcher.js
     if ((this: any).handleDispatch) {
       Dispatcher.subscribe((this: any).handleDispatch.bind(this));
     }
   }
 
+
   emitChange(data: Object = {}) {
     this._emitter.emit(CHANGE_EVENT, {store: this}, ...data);
   }
 
-  loadCachedData() {
-    loadCachedData(this);
+
+  subscribe(
+    fn: (data: any) => void
+  ): {remove: () => void;} {
+    this._emitter.on(CHANGE_EVENT, fn);
+
+    return {
+      remove: () => {
+        this._emitter.removeListener(CHANGE_EVENT, fn);
+      }
+    };
   }
 
-  /*
-  ** Ignore subscribe
-  */
 
-  // subscribe(
-  //   fn: (data: any) => void
-  // ): {remove: () => void;} {
-  //   this._emitter.on(CHANGE_EVENT, fn);
-  //
-  //   return {
-  //     remove: () => {
-  //       this._emitter.removeListener(CHANGE_EVENT, fn);
-  //     }
-  //   };
-  // }
-
-  __wrapAsObservable<TOptions, TResult>(
+  __wrapAsObservable(
     fn: (options: TOptions) => TResult,
     options: TOptions
   ): Observable<TResult> {
     return Observable.create(observer => {
       observer.onNext(fn(options));
+      // view-controller, by subscribing the Observable, get subscription
       var subscription = this.subscribe(() => observer.onNext(fn(options)));
-    }).distincUntilChanged(
+      // use subscription.remove to cleaning up
+      return () => subscription.remove();
+    }).distinctUntilChanged(
       /*keySelector*/ null,
-      (a, b) => a === b,
+      /*comparer*/ (a, b) => a === b,
     );
   }
 }
 
-function loadCachedData(instance: Object) {
-  if (!isOffline()) {
-    return;
-  }
-
-  Object.keys(instance).forEach(key => {
-    var ctor: any = instance.constructor;
-    var value = localStorage.getItem(ctor.name + '.' + key);
-    if (value) {
-      instance[key] = JSON.parse(value);
-    }
-  });
-}
 
 module.exports = BaseStore;

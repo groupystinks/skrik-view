@@ -56,7 +56,6 @@ function _pseudoChapterObject(
 }
 
 
-// markdown source
 function getByChapter(
   options: {title: string, chapter: number}
 ): Promise<Object> {
@@ -73,7 +72,7 @@ function getByChapter(
 }
 
 
-(function list(
+function list(
   options: {maxResults: number; title: string}
 ): Promise<ListResult> {
   return API.wrap(() => {
@@ -104,7 +103,7 @@ function getByChapter(
       });
     });
   });
-})(options);
+};
 
 
 function _turnToMarkdown(sourceHtml, title, author) {
@@ -139,3 +138,9 @@ function _getHTMLRemote() {
     ).then(body => body)
   });
 };
+
+
+module.exports = {
+  list,
+  getByChapter,
+}

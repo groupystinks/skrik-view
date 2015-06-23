@@ -69,6 +69,7 @@ function executeLocalRequest(options) {
       var result = '';
       var listRequest = [];
       var listResult = [];
+      // pathname breaks, wait to push into Githun
       var pathname = path.join(dataDir, options.title);
 
       fs.readdir(pathname, (err, files) => {
