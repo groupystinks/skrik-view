@@ -12,7 +12,7 @@ var Dispatcher = {
     emitter.on(EVENT, fn);
     return {
       remove() {
-        emitter.removeEventListener(EVENT, fn);
+        emitter.removeListener(EVENT, fn);
       }
     };
   }

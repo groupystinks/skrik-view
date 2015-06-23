@@ -7,8 +7,9 @@ var _ = require('lodash');
 
 // [debug]
 var options = {
-  bookname: "A Portrait of the Artist as a Young Man",
-  chapter: 1
+  title: "A Portrait of the Artist as a Young Man",
+  // chapter: 3
+  maxResults: 10
 }
 
 // [debug] read local data
@@ -16,44 +17,97 @@ var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
               path.dirname(require.main.filename)))));
 
 
+declare class ListResult {
+    items: Array<{
+                  markdown: string;
+                  // snippet should be handled in View part?
+                  // snippet: string;
+                  chapter: number;
+                  title: string;
+                  author: string;
+                  edition: number;
+                  language: string;
+                  characterSetEncoding: string;
+                }>
+}
+
+
 // [debug] wrap psudo API chapter.
-function _psudoChapterObject(markdown: string, options: {bookname: string, chapter: number}) {
+function _pseudoChapterObject(
+  markdown: string,
+  options: {title: string,
+  chapter: ?number}) {
   // match markdown metadata pattern like => author: James Joyce
   var mdMetaPattern = new RegExp(/^(^[A-Z][\w\s]+): ([\w\s-,]+)\b$/, 'gm');
+
   return API.extractMeta(
-    {bookname: options.bookname}
+    {title: options.title}
   ).then(meta => {
-    var myArray
+    var myArray;
     var result = {};
     while((myArray = mdMetaPattern.exec(meta)) !== null) {
       myArray[1] = _.camelCase(myArray[1]);
-      result[myArray[1]] = myArray[2]
+      result[myArray[1]] = myArray[2];
     }
     result['markdown'] = markdown;
     result['chapter'] = options.chapter;
-    return result
+    return result;
   });
 }
 
 
 // markdown source
-function getByChapter(options: {bookname: string, chapter: number}) {
+function getByChapter(
+  options: {title: string, chapter: number}
+): Promise<Object> {
   return API.wrap(() => {
     return API.executeLocalRequest(
-      {bookname: options.bookname,
+      {title: options.title,
         chapter: 'chapter ' + options.chapter}
     ).then(markdown => {
-      _psudoChapterObject(markdown, options).then(result => {
+      _pseudoChapterObject(markdown, options).then(result => {
         return result;
       });
     });
   });
 }
 
-function list() {}
+
+(function list(
+  options: {maxResults: number; title: string}
+): Promise<ListResult> {
+  return API.wrap(() => {
+    return API.executeLocalRequest(
+      {title: options.title,
+       maxResults: options.maxResults}
+    )
+    .then(listMarkdowns => {
+      var promises = listMarkdowns.map(markdown => {
+        return _pseudoChapterObject(markdown, options);
+      });
+
+      RSVP.all(promises)
+      .then(unlistResult => {
+        var listResult = {};
+        for (let i = 0; i < unlistResult.length; i++) {
+          unlistResult[i]['chapter'] = i + 1;
+          unlistResult[i]['edition'] = Number(unlistResult[i]['edition']);
+          unlistResult[i]['chapter'] = Number(unlistResult[i]['chapter']);
+        }
+        listResult['items'] = unlistResult;
+
+        console.log(listResult);
+        return listResult;
+      })
+      .catch(reason => {
+        console.error(reason);
+      });
+    });
+  });
+})(options);
 
 
-function _turnToMarkdown(sourceHtml, bookname, author) {
+function _turnToMarkdown(sourceHtml, title, author) {
   var rawHTML = ''
   fs.readFile(appDir + '/data/a-portrait.html', function(err, data) {
 
@@ -85,51 +139,3 @@ function _getHTMLRemote() {
     ).then(body => body)
   });
 };
-
-
-
-function getByChapter() {}
-
-// var request = require('request');
-// request('https://ia802701.us.archive.org/34/items/aportraitofthear04217gut/prtrt10h.htm', function (error, response, body) {
-//   if (!error && response.statusCode == 200) {
-//     console.log(response.statusCode) // Show the HTML for the Google homepage.
-//   }
-// });
-
-
-// (function getByChapterLocal(options:{chapter: string}): Promise<Object> {
-//   return new RSVP.Promise((resolve, reject) => {
-//     var rawHTML = '';
-//     var handler = new htmlparser.DefaultHandler(function (error, dom) {
-//         if (error)
-//             console.error('parsing error');
-//     });
-//     var parser = new htmlparser.Parser(handler);
-//     fs.readFile(appDir + '/data/a-portrait.html', function(err, data) {
-//
-//       if (err) {throw err};
-//
-//       rawHTML += data;
-//       parser.parseComplete(rawHTML);
-//       var firstLayerTags = handler.dom[0].children;
-//       try {
-//         firstLayerTags.forEach(firstLayerTag => {
-//           if (firstLayerTag.name === 'body') {
-//             firstLayerTag.children.forEach(secondLayerTag => {
-//               if (secondLayerTag.name === 'h2') {
-//                 console.log(secondLayerTag.children);
-//               }
-//             });
-//           }
-//         });
-//       } catch(e) {
-//       }
-//
-//     });
-//   });
-// })();
-// .then( secondLayerTags => {
-//     console.log(secondLayerTags);
-//   }
-// )

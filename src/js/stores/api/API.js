@@ -4,6 +4,7 @@ var ClientID = require('../../components/ClientID');
 var EventEmitter = require('events').EventEmitter;
 var request = require('request');
 var RSVP = require('rsvp');
+var _ = require('lodash');
 var emitter = new EventEmitter();
 var pendingRequests = [];
 
@@ -63,8 +64,47 @@ function executeHTTPRequest(option) {
 */
 function executeLocalRequest(options) {
   return new RSVP.Promise((resolve, reject) => {
+    if (!options.chapter && options.maxResults) {
+
+      var result = '';
+      var listRequest = [];
+      var listResult = [];
+      var pathname = path.join(dataDir, options.title);
+
+      fs.readdir(pathname, (err, files) => {
+        _.pull(files, 'INFO.md');
+
+        // chaptername vs maxResults
+        files.forEach(chaptername => {
+          listRequest.push(_readFileAsync(pathname, chaptername));
+        });
+
+        RSVP.all(listRequest)
+        .then((listResult) => {
+          resolve(listResult);
+        });
+      });
+
+    } else {
+      var result = '';
+      var pathname = path.join(dataDir, options.title, options.chapter + '.md')
+      fs.readFile(pathname, function(err, data) {
+        result += data;
+
+        if (err) {
+          reject(err);
+        };
+
+        resolve(result);
+      });
+    }
+  });
+}
+
+function extractMeta(options) {
+  return new RSVP.Promise((resolve, reject) => {
     var result = ''
-    var pathname = path.join(dataDir, options.bookname, options.chapter + '.md')
+    var pathname = path.join(dataDir, options.title, 'INFO.md')
     fs.readFile(pathname, function(err, data) {
       result += data;
 
@@ -77,19 +117,19 @@ function executeLocalRequest(options) {
   });
 }
 
-function extractMeta(options) {
+function _readFileAsync(pathname, chaptername) {
   return new RSVP.Promise((resolve, reject) => {
-    var result = ''
-    var pathname = path.join(dataDir, options.bookname, 'INFO.md')
-    fs.readFile(pathname, function(err, data) {
-      result += data;
+    var result = '';
+    var filepath = path.join(pathname, chaptername);
 
+    fs.readFile(filepath, function(err, data) {
       if (err) {
-        reject(err);
-      };
-
+        rejcet(err);
+      }
+      result += data;
       resolve(result);
     });
+
   });
 }
 
