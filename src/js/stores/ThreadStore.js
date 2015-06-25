@@ -121,8 +121,8 @@ class ThreadStore extends BaseStore {
 * Debug
 **/
 
-// let check = new ThreadStore();
-// let options = {maxResultCount: 10, title: "A Portrait of the Artist as a Young Man"}
-// console.log(check._listSync(options));
+let check = new ThreadStore();
+let options = {maxResultCount: 10, title: "A Portrait of the Artist as a Young Man"}
+console.log(check._listSync(options));
 
 module.exports = new ThreadStore();
