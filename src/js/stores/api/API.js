@@ -63,11 +63,11 @@ function executeHTTPRequest(options) {
         console.log(error);
       }
 
-      var info = _.remove(body, function(n) {
+      var listObj = JSON.parse(body);
+      var info = _.remove(listObj, function(n) {
         return n.name === 'INFO.md';
       });
 
-      var listObj = JSON.parse(body);
       listObj.forEach(chapterObject => {
         listRequest.push(_requestFileAsync(chapterObject.download_url));
       });
