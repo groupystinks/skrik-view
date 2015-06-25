@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var urlUtil = require('url');
 var ClientID = require('../../components/ClientID');
 var EventEmitter = require('events').EventEmitter;
 var request = require('request');
@@ -45,15 +46,38 @@ function wrap(
   });
 }
 
-function executeHTTPRequest(option) {
+function executeHTTPRequest(options) {
   return new RSVP.Promise((resolve, reject) => {
-    request(option.url, (error, response, body) => {
-      if (error || !response.statusCode == 200) {
-        console.error('API error', error)
-        reject(error);
+    var listRequest = [];
+    var listResult = [];
+    var dirUrl = urlUtil.resolve(options.dataUrl, options.title);
+    var urlPptions = {
+                    url: dirUrl,
+                    headers: {
+                      'User-Agent': 'skrik-view'
+                    }
+                  };
+
+    request(urlPptions, function(error, response, body) {
+      if (error) {
+        console.log(error);
       }
-      resolve(body);
-    })
+
+      var info = _.remove(body, function(n) {
+        return n.name === 'INFO.md';
+      });
+
+      var listObj = JSON.parse(body);
+      listObj.forEach(chapterObject => {
+        listRequest.push(_requestFileAsync(chapterObject.download_url));
+      });
+
+      RSVP.all(listRequest)
+      .then(listResult => {
+        resolve(listResult);
+      });
+    });
+
   });
 }
 
@@ -131,6 +155,18 @@ function _readFileAsync(pathname, chaptername) {
       resolve(result);
     });
 
+  });
+}
+
+function _requestFileAsync(url) {
+  return new RSVP.Promise((resolve, reject) => {
+    request(url, (error, response, body) => {
+      if (error || !response.statusCode == 200) {
+        console.error('API error', error);
+        reject(error);
+      }
+      resolve(body);
+    });
   });
 }
 

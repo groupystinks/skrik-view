@@ -8,19 +8,22 @@ var _ = require('lodash');
 // [debug]
 var options = {
   title: "A Portrait of the Artist as a Young Man",
+  dataUrl: 'https://api.github.com/repos/groupystinks/skrik-view/contents/data/',
   // chapter: 3
   maxResults: 10
 }
 
-// [debug] read local data
-var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
-              path.dirname(require.main.filename)))));
+// // [debug] read local data
+// var appDir = path.dirname(path.dirname(path.dirname(path.dirname(
+//               path.dirname(require.main.filename)))));
 
 
 declare class ListResult {
     items: Array<{
                   markdown: string;
-                  // snippet should be handled in View part?
+                  /*
+                  ** snippet should be handled in View part?
+                  */
                   // snippet: string;
                   chapter: number;
                   title: string;
@@ -73,11 +76,12 @@ function getByChapter(
 
 
 function list(
-  options: {maxResults: number; title: string}
+  options: {maxResults: number; title: string; dataUrl: string}
 ): Promise<ListResult> {
   return API.wrap(() => {
-    return API.executeLocalRequest(
+    return API.executeHTTPRequest(
       {title: options.title,
+       dataUrl: options.dataUrl,
        maxResults: options.maxResults}
     )
     .then(listMarkdowns => {
@@ -127,15 +131,6 @@ function _turnToMarkdown(sourceHtml, title, author) {
       if (err) throw err;
     });
 
-  });
-};
-
-
-function _getHTMLRemote() {
-  return API.wrap(() => {
-    return API.executeHTTPRequest(
-      {url: 'https://ia802701.us.archive.org/34/items/aportraitofthear04217gut/prtrt10h.htm'}
-    ).then(body => body)
   });
 };
 
