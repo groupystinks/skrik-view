@@ -7,20 +7,27 @@ var {Observable} = require('rx-lite');
 
 // type ListResult = {
 //   hasMore: bool;
-//   resultSizeEstimate: number;
 //   items: Array<Thread>;
 // };
 
-// type PagingInfo = {
-//   fetchedResults: Array<Thread>;
-//   fetchedResultCount: number;
-//   nextPageToken: string;
-//   resultSizeEstimate: number;
-// };
+type PagingInfo = {
+  fetchedResults: Array<Thread>;
+  fetchedResultCount: number;
+};
 
 class ThreadStore extends BaseStore {
   _pagingInfoByQuery: {[query: string]: PagingInfo};
-  _threadsByID: {[id: string]: Thread};
+  _threadsByID: Array<{
+                  chapter: number;
+                  name: string;
+                  size: number;
+                  title: string;
+                  author: string;
+                  edition: number;
+                  language: string;
+                  characterSetEncoding: string;
+                  chapter: numger
+              }>;
 
   constructor() {
     super();
@@ -34,16 +41,16 @@ class ThreadStore extends BaseStore {
     return this.__wrapAsObservable(this._getByChapterSync, options);
   }
 
-  _getByChapterSync = (options: {id: string}) => {
-    if (this._threadsByID.hasOwnProperty(options.id)) {
-      return this._threadsByID[options.id];
+  _getByChapterSync = (options: {chapter: string}) => {
+    if (this._threadsByID.hasOwnProperty(options.chapter)) {
+      return this._threadsByID[options.chapter];
     }
 
     // prevent double fetching
-    this._threadsByID[options.id] = null;
+    this._threadsByID[options.chapter] = null;
 
     ThreadAPI.getByChapter(options).then(item => {
-      this._threadsByID[item.id] = item;
+      this._threadsByID[item.chapter] = item;
       this.emitChange();
     });
 
@@ -53,13 +60,20 @@ class ThreadStore extends BaseStore {
 
 
   list(
-    options: {query: string; maxResultCount: number}
+    options: {query: string;
+      maxResultCount: number;
+      title: string;}
   ): Observable {
     return this.__wrapAsObservable(this._listSync, options);
   }
 
-  _listSync = (options: {query: string; maxResultCount: number}) => {
+  _listSync = (options: {
+                query: string;
+                title: string;
+                maxResultCount: number;}) => {
+
     var query = options.query || '';
+    var title = options.title || '';
     var requestedResultCount = options.maxResultCount || 10;
     var maxResults = requestedResultCount;
     var result = null;
@@ -70,23 +84,16 @@ class ThreadStore extends BaseStore {
         return null;
       }
 
-      leftoverResults = requestedResultCount - pagingInfo.fetchedResultCount;
+      maxResults = requestedResultCount - pagingInfo.fetchedResultCount;
 
       result = {
         items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
       };
 
-      if (leftoverResults <= 0 || pagingInfo.isFetching) {
+      if (maxResults <= 0 || pagingInfo.isFetching) {
         return result;
       }
     }
-
-    var threadAPIoptions = {
-      // query,
-
-      title/* debug */: "A Portrait of the Artist as a Young Man",
-      maxResults,
-    };
 
     // prevent double fetching
     if (!this._pagingInfoByQuery[query]) {
@@ -96,14 +103,18 @@ class ThreadStore extends BaseStore {
       this._pagingInfoByQuery[query].isFetching = true;
     }
 
-    console.log("check ThreadAPI, Hello? ", ThreadAPI);
-    ThreadAPI.list(threadAPIoptions).then(listResult => {
-      console.log("in ThreadAPI.list");
+    var apiOptions = {
+      maxResults,
+      title,
+    }
+
+    ThreadAPI.list(apiOptions).then(listResult => {
+
       // Add to byID cache
-      listResult.items.forEach(item => this._threadsByID[item.id] = item);
+      listResult.items.forEach(item => this._threadsByID[item.chapter-1] = item);
 
       // Update cache with concatenated results
-      var previousResults = pagingInfo.fetchedResults;
+      var previousResults = pagingInfo.fetchedResults || [];
       var allItems = previousResults.concat(listResult.items);
       this._pagingInfoByQuery[query] = {
         fetchedResults: allItems,
@@ -117,12 +128,17 @@ class ThreadStore extends BaseStore {
   };
 }
 
-/**
-* Debug
-**/
-
-let check = new ThreadStore();
-let options = {maxResultCount: 10, title: "A Portrait of the Artist as a Young Man"}
-console.log(check._listSync(options));
+// /**
+// * Debug
+// **/
+// let check = new ThreadStore();
+// // [debug]
+// let options = {
+//   title: "A Portrait of the Artist as a Young Man",
+//   dataUrl: 'https://api.github.com/repos/groupystinks/skrik-view/contents/data/',
+//   query: "in:inbox",
+//   maxResults: 10
+// }
+// var aa = check._listSync(options);
 
 module.exports = new ThreadStore();

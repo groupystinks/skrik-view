@@ -18,10 +18,11 @@
     "rx-lite": "^2.5.2",
     "tinytinycolor": "0.0.3",
     "utf8": "^2.1.0",
-    "request": "^2.57.0",
+    "jquery": "^2.1.4",
     "to-markdown": "^1.2.1"
   },
   "devDependencies": {
+    "json-loader": "^0.5.2",
     "babel-eslint": "^3.1.7",
     "babel-loader": "^5.0.0",
     "eslint": "^0.20.0",
