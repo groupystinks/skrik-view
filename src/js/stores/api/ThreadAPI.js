@@ -61,7 +61,7 @@ function list(
   options: {maxResults: number; title: string;}
 ): Promise<ListResult> {
   return API.wrap(() => {
-    return API.threadRequest(
+    return API.requestThread(
       {title: options.title,
        maxResults: options.maxResults}
     )
@@ -84,12 +84,12 @@ function list(
         }
         listResult['items'] = unlistResult;
 
-        console.log(listResult);
         return listResult;
       });
     });
   });
 }
+
 
 module.exports = {
   list,

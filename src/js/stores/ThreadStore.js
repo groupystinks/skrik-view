@@ -26,7 +26,6 @@ class ThreadStore extends BaseStore {
                   edition: number;
                   language: string;
                   characterSetEncoding: string;
-                  chapter: numger
               }>;
 
   constructor() {
@@ -36,7 +35,9 @@ class ThreadStore extends BaseStore {
     this._threadsByID = {};
   }
 
-
+  /*
+  ** not yet finished
+  */
   getByChapter(options: {chapter: string}): Obervable {
     return this.__wrapAsObservable(this._getByChapterSync, options);
   }
@@ -77,8 +78,9 @@ class ThreadStore extends BaseStore {
     var requestedResultCount = options.maxResultCount || 10;
     var maxResults = requestedResultCount;
     var result = null;
+    var fetched = this._pagingInfoByQuery.hasOwnProperty(query);
 
-    if (this._pagingInfoByQuery.hasOwnProperty(query)) {
+    if (fetched) {
       var pagingInfo = this._pagingInfoByQuery[query];
       if (!pagingInfo) {
         return null;
@@ -114,7 +116,7 @@ class ThreadStore extends BaseStore {
       listResult.items.forEach(item => this._threadsByID[item.chapter-1] = item);
 
       // Update cache with concatenated results
-      var previousResults = pagingInfo.fetchedResults || [];
+      var previousResults = fetched ? pagingInfo.fetchedResults : [];
       var allItems = previousResults.concat(listResult.items);
       this._pagingInfoByQuery[query] = {
         fetchedResults: allItems,

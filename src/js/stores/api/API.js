@@ -1,5 +1,3 @@
-// var fs = require('fs');
-var path = require('path');
 var urlUtil = require('url');
 var ClientID = require('../../components/ClientID');
 var EventEmitter = require('events').EventEmitter;
@@ -8,10 +6,6 @@ var RSVP = require('rsvp');
 var _ = require('lodash');
 var emitter = new EventEmitter();
 var pendingRequests = [];
-
-
-var dataDir = path.dirname(path.dirname(path.dirname(path.dirname(
-              path.dirname(require.main.filename))))) + '/data';
 
 
 RSVP.on('error', function(error) {
@@ -60,7 +54,7 @@ function subscribe(
 }
 
 
-function threadRequest(options) {
+function requestThread(options) {
   return new RSVP.Promise((resolve, reject) => {
     var listRequest = [];
     var listResult = [];
@@ -70,7 +64,6 @@ function threadRequest(options) {
       url: dirUrl,
       crossDomain: true,
       type: 'GET',
-      // beforeSend: function(xhr){xhr.setRequestHeader('User-Agent', 'skrik-view');},
     };
 
     $.ajax(urlOptions).done(data => {
@@ -99,6 +92,39 @@ function threadRequest(options) {
     .fail((jqXHR, textStatus, errorThrown) => {
       console.error(errorThrown);
 
+    });
+  });
+}
+
+function requestPassages(options) {
+  return new RSVP.Promise((resolve, reject) => {
+    var download_urls = options.download_url.map(download_url => download_url);
+    var listRequest = download_urls.map(url => {
+      $.ajax(url).done(data => {
+        resolve(data);
+      });
+    });
+
+    $.when.apply($, listRequest)
+    .done(() => {
+      // // TODO:
+      // //      while argument's length is 1
+      // // argument for each ajax call, each of one in [data, statusText, jqXHR]
+      // var results = [];
+      // for (let i = 0; i < arguments.length; i++) {
+      //   results.push(arguments[i][0]);
+      // }
+      // convert the arguments array, where each argument is in the form
+      // [data, textStatus, jqXHR], into an array of just the data values
+      var results = [].map.call(arguments, function(arg) {
+          return arg[0];
+      });
+
+      console.log(results);
+      resolve(results)
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      reject(errorThrown);
     });
   });
 }
@@ -194,7 +220,8 @@ function _requestAsync(url) {
 
 
 module.exports = {
-  threadRequest,
+  requestThread,
+  requestPassages,
   extractMeta,
   wrap,
   resolvePendingRequests,
