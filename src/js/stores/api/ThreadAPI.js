@@ -1,30 +1,30 @@
-var fs = require('fs');
 var path = require('path');
 var API = require('./API');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 
+var Dispatcher = require('../../dispatcher/Dispatcher');
+var ActionType = require('../../actions/ActionType');
+
 declare class ListResult {
-    items: Array<{
-                  /*
-                  ** snippet should be handled in View part?
-                  */
-                  // snippet: string;
-                  download_url: string;
-                  name: string;
-                  size: number;
-                  chapter: number;
-                  title: string;
-                  author: string;
-                  edition: number;
-                  language: string;
-                  characterSetEncoding: string;
-                }>
+  items: Array<{
+    /*
+    ** snippet should be handled in View part?
+    */
+    download_url: string;
+    name: string;
+    size: number;
+    title: string;
+    author: string;
+    edition: number;
+    language: string;
+    characterSetEncoding: string;
+  }>
 }
 
 
-// [debug] wrap psudo API chapter.
-function _pseudoChapterObject(
+// wrap meta
+function _wrapMeta(
   thread: object,
   meta: string,
   options: {title: string, dataUrl: string}) {
@@ -49,7 +49,7 @@ function getByChapter(
       {title: options.title,
         chapter: 'chapter ' + options.chapter}
     ).then(markdown => {
-      _pseudoChapterObject(markdown, options).then(result => {
+      _wrapMeta(markdown, options).then(result => {
         return result;
       });
     });
@@ -58,35 +58,45 @@ function getByChapter(
 
 
 function list(
-  options: {maxResults: number; title: string;}
+  options: {title: string;}
 ): Promise<ListResult> {
   return API.wrap(() => {
-    return API.requestThread(
-      {title: options.title,
-       maxResults: options.maxResults}
-    )
+    return API.requestThread({title: options.title})
     .then(threadAndInfo => {
-      var threads = threadAndInfo['threads']
-      var info = threadAndInfo['info'];
+      var threads = threadAndInfo.threads || [];
+      var info = threadAndInfo.info || '';
+
+      if (!threads.length) {
+        return Promise.resolve({
+          items: [],
+        });
+      }
 
       return API.extractMeta({title: options.title, info: info})
        .then(meta => {
         var unlistResult = threads.map(thread => {
-          return _pseudoChapterObject(thread, meta, options);
+          return _wrapMeta(thread, meta, options);
         });
 
         var listResult = {};
         for (let i = 0; i < unlistResult.length; i++) {
-          unlistResult[i]['chapter'] = i + 1;
           unlistResult[i]['edition'] = Number(unlistResult[i]['edition']);
-          unlistResult[i]['chapter'] = Number(unlistResult[i]['chapter']);
-
         }
         listResult['items'] = unlistResult;
 
+        // _dispatchAddMany(listResult);
         return listResult;
       });
     });
+  });
+}
+
+function _dispatchAddMany(listResult): void {
+  var passages = listResult.items;
+
+  Dispatcher.dispatch({
+    type: ActionType.Passage.ADD_MANY,
+    passages: passages,
   });
 }
 

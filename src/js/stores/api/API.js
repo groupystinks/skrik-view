@@ -96,36 +96,23 @@ function requestThread(options) {
   });
 }
 
-function requestPassages(options) {
+function requestPassages(options: {
+  urls: Array<string>;
+  title: string;}
+): Array<String> {
   return new RSVP.Promise((resolve, reject) => {
-    var download_urls = options.download_url.map(download_url => download_url);
-    var listRequest = download_urls.map(url => {
-      $.ajax(url).done(data => {
-        resolve(data);
-      });
-    });
+    var download_urls = options.urls.map(url => url);
+    var listRequest = download_urls.map(url => new RSVP.Promise((resolve, reject) => {
+      resolve($.ajax(url));
+    }));
 
-    $.when.apply($, listRequest)
-    .done(() => {
-      // // TODO:
-      // //      while argument's length is 1
-      // // argument for each ajax call, each of one in [data, statusText, jqXHR]
-      // var results = [];
-      // for (let i = 0; i < arguments.length; i++) {
-      //   results.push(arguments[i][0]);
-      // }
-      // convert the arguments array, where each argument is in the form
-      // [data, textStatus, jqXHR], into an array of just the data values
-      var results = [].map.call(arguments, function(arg) {
-          return arg[0];
-      });
-
-      console.log(results);
-      resolve(results)
+    RSVP.all(listRequest)
+    .then(results => {
+      resolve(results);
     })
-    .fail((jqXHR, textStatus, errorThrown) => {
-      reject(errorThrown);
-    });
+    .catch(error => {
+      reject(error);
+    })
   });
 }
 

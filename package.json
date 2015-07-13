@@ -10,7 +10,7 @@
     "intl": "^0.1.4",
     "jquery": "^2.1.4",
     "keyboardjs": "^0.4.2",
-    "lodash": "^3.8.0",
+    "lodash": "^3.10.0",
     "marked": "^0.3.3",
     "radium": "git://github.com/FormidableLabs/radium.git",
     "react": "^0.13.2",
