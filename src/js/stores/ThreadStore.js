@@ -17,9 +17,9 @@ type PagingInfo = {
 
 class ThreadStore extends BaseStore {
   _pagingInfoByQuery: {[query: string]: PagingInfo};
-  _threadsByID: Array<{
-                  chapter: number;
+  _threadsByName: Array<{
                   name: string;
+                  download_url: string;
                   size: number;
                   title: string;
                   author: string;
@@ -32,26 +32,34 @@ class ThreadStore extends BaseStore {
     super();
 
     this._pagingInfoByQuery = {};
-    this._threadsByID = {};
+    this._threadsByName = {};
   }
 
   /*
   ** not yet finished
   */
-  getByChapter(options: {chapter: string}): Obervable {
+  getByChapter(options:
+    {download_url: string;
+      name: string;
+      title: string;
+  }): Obervable {
     return this.__wrapAsObservable(this._getByChapterSync, options);
   }
 
-  _getByChapterSync = (options: {chapter: string}) => {
-    if (this._threadsByID.hasOwnProperty(options.chapter)) {
-      return this._threadsByID[options.chapter];
+  _getByChapterSync = (options:
+    {download_url: string;
+    name: string;
+    title: string;
+  }) => {
+    if (this._threadsByName.hasOwnProperty(options.name)) {
+      return this._threadsByName[options.name];
     }
 
     // prevent double fetching
-    this._threadsByID[options.chapter] = null;
+    this._threadsByName[options.name] = null;
 
     ThreadAPI.getByChapter(options).then(item => {
-      this._threadsByID[item.chapter] = item;
+      this._threadsByName[item.name] = item;
       this.emitChange();
     });
 
@@ -75,8 +83,6 @@ class ThreadStore extends BaseStore {
 
     var query = options.query || '';
     var title = options.title || '';
-    var requestedResultCount = options.maxResultCount || 10;
-    var maxResults = requestedResultCount;
     var result = null;
     var fetched = this._pagingInfoByQuery.hasOwnProperty(query);
 
@@ -86,15 +92,15 @@ class ThreadStore extends BaseStore {
         return null;
       }
 
-      maxResults = requestedResultCount - pagingInfo.fetchedResultCount;
-
       result = {
-        items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
+        items: pagingInfo.fetchedResults
       };
 
-      if (maxResults <= 0 || pagingInfo.isFetching) {
+      if (pagingInfo.isFetching) {
         return result;
       }
+
+      return result;
     }
 
     // prevent double fetching
@@ -106,14 +112,13 @@ class ThreadStore extends BaseStore {
     }
 
     var apiOptions = {
-      maxResults,
       title,
     }
 
     ThreadAPI.list(apiOptions).then(listResult => {
 
-      // Add to byID cache
-      listResult.items.forEach(item => this._threadsByID[item.chapter-1] = item);
+      // Add to byName cache
+      listResult.items.forEach(item => this._threadsByName[item.name] = item);
 
       // Update cache with concatenated results
       var previousResults = fetched ? pagingInfo.fetchedResults : [];
