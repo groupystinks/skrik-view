@@ -26,7 +26,7 @@ class PassageStore extends BaseStore {
       names: Array;
       maxResults: number;}
     ) => {
-    var names = options.names.map(name => name.split(' ').join('%20'));
+    var names = options.names.map(name => name);
     var existing = _.chain(names)
       .map(name => this._passagesByName[name])
       .compact()

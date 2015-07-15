@@ -3,7 +3,6 @@ var LineClamp = require('./LineClamp');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
 var React = require('react/addons');
-var RelativeDate = require('./RelativeDate');
 var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
@@ -21,12 +20,14 @@ class BlockPassageList extends Component {
   };
 
   render(): any {
+    console.log("Passage in BlockPassageList: ", this.props.passages);
+    console.log("selectedPassage in BlockPassageList: ", this.props.selectedPassageName);
     return (
       <ul style={[styles.list.root, this.style]}>
         {this.props.passages.map((psg, index) => (
           <BlockPassageListItem
             index={index}
-            isSelected={psg.id === this.props.selectedPassageName}
+            isSelected={psg.name === this.props.selectedPassageName}
             key={index}
             passage={psg}
             onClick={this._onPassageClick}
@@ -121,14 +122,6 @@ var styles = {
       }
     },
 
-    innerIsUnread: {
-      background: Colors.irishGreen.lighten(40),
-
-      ':hover': {
-        background: Colors.irishGreen.lighten(40),
-      }
-    },
-
     innerIsSelected: {
       background: Colors.irishGreen,
       color: 'white',
@@ -162,27 +155,8 @@ var styles = {
       whiteSpace: 'nowrap',
     },
 
-    senderIsSelected: {
-      color: 'white',
-    },
-
     snippet: {
       opacity: 0.5,
-    },
-
-    star: {
-      color: 'yellow',
-      marginRight: '4px',
-      textShadow: `
-        -1px -1px 0 #999,
-        1px -1px 0 #999,
-        -1px 1px 0 #999,
-        1px 1px 0 #999,
-        -1px 0 0 #999,
-        1px 0 0 #999,
-        0 1px 0 #999,
-        0 -1px 0 #999
-      `,
     },
   },
 };
