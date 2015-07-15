@@ -12,6 +12,7 @@
 var Colors = require('./ColorMe');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
+var InfiniteScroll = require('./InfiniteScroll');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
 var scrollBarWidth = '15px';
@@ -114,9 +115,15 @@ class Scroller extends Component {
             style={[styles.thumb, {height: thumbHeight, top:thumbTop}]}
           />
         </div>
-        <div style={styles.content}>
-          {this.props.children}
-        </div>
+        <InfiniteScroll
+          onScroll={this._onScroll}
+          ref="viewport"
+          style={styles.viewport}
+          threshold={this.props.threshold}>
+          <div style={styles.content}>
+            {this.props.children}
+          </div>
+        </InfiniteScroll>
       </div>
     );
   }

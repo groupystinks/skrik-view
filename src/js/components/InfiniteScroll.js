@@ -1,19 +1,13 @@
 /**
- *
- * Based off https://github.com/guillaumervls/react-infinite-scroll
+ *  By https://github.com/guillaumervls/react-infinite-scroll
  */
 
  var Radium = require('radium');
  var {Component, PropTypes, findDOMNode} = require('react');
 
- @Redium
+ @Radium
  class InfiniteScroll extends Component {
    static propTypes = {
-     // Whether or not to listen for scroll and resize events. Set this to `true`
-     // when you have loaded all the data already.
-     hasMore: PropTypes.bool.isRequired,
-    //  Called when page is within 'threshold' of the bottom
-    onRequestMoreItems: PropTypes.func.isRequired,
     onScroll: PropTypes.func.isRequired,
     threshold: PropTypes.number.isRequired,
 
@@ -23,20 +17,12 @@
   };
 
   static defaultProps = {
-    hasMore: false,
     isScrollContainer: false,
-    onRequestMoreItems: () => {},
     threshold: 250,
   };
 
   componentDidMount() {
     this._attachListeners();
-  }
-
-  componentWillReceiveProps(nextProps: Object) {
-    if (!nextProps.hasMore) {
-      this._detachListeners();
-    }
   }
 
   componentWillUnmount() {
@@ -70,13 +56,12 @@
     if ((!this._lastHeight || this._lastHeight < height) && isPastThreshold) {
       // call loadMore after _detachListeners to allow
       // for non-async loadMore functions
-      this.props.onRequestMoreItems();
       this._lastHeight = height
     }
   };
 
   render(): any {
-    var style = this.props.isScrollContainer ? {overflow 'auto'} : null;
+    var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div
         onScroll={this._onScroll}

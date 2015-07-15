@@ -4,7 +4,7 @@ function select(passage: ?Object) {
   if (passage) {
     router.transitionTo(
       "thread",
-      {passageName: passage.name, threadTitle: passage.title}
+      {passageName: encodeURI(passage.name), threadTitle: encodeURI(passage.title)}
     );
   } else {
     router.transitionTo('app');
