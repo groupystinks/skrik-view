@@ -209,6 +209,7 @@ function _requestAsync(url) {
 module.exports = {
   requestThread,
   requestPassages,
+  subscribe,
   extractMeta,
   wrap,
   resolvePendingRequests,

@@ -7,29 +7,16 @@ var _ = require('lodash');
 var {Observable} = require('rx-lite');
 
 class PassageStore extends BaseStore {
-  _passagesByName: Array<{id: number}>
+  _passagesByName: Array<{
+      name: string;
+      url: string;
+      markdown: string;
+    }>
 
   constructor() {
     super();
 
     this._passagesByName = {};
-  }
-
-  handleDispatch(
-    action: {
-      type: string;
-      passages?: Array;
-    }
-  ): void {
-    switch (action.type) {
-      case ActionType.Passage.ADD_MANY:
-        if (!action.passages) throw new Error('passages null');
-        // action.passages.forEach(passage => {
-        //   this._passagesByName[passage.name] = passage;
-        // });
-        this.emitChange();
-        break;
-    }
   }
 
   _getByURLsSync = (
@@ -54,6 +41,7 @@ class PassageStore extends BaseStore {
         options.names.length :
         options.maxResults;
 
+
     var urlsToFetch = _.difference(
       options.urls,
       existing.map(passage => passage.url)
@@ -64,13 +52,10 @@ class PassageStore extends BaseStore {
       title: options.title,
     }
 
-    PassageAPI.getByURLs(apiOptions).then(result => {
-      result.passages.forEach(passage => {
-        this._passagesByName[passage.name] = {
-          markdown: passage.markdown,
-          name: passage.name,
-          url: passage.url,
-        };
+    PassageAPI.getByURLs(apiOptions).then(passagesList => {
+
+      passagesList.forEach(passage => {
+        this._passagesByName[passage.name] = passage;
       });
       console.log('in PassageStore: ', this._passagesByName);
       this.emitChange();

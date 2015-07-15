@@ -84,19 +84,9 @@ function list(
         }
         listResult['items'] = unlistResult;
 
-        // _dispatchAddMany(listResult);
         return listResult;
       });
     });
-  });
-}
-
-function _dispatchAddMany(listResult): void {
-  var passages = listResult.items;
-
-  Dispatcher.dispatch({
-    type: ActionType.Passage.ADD_MANY,
-    passages: passages,
   });
 }
 

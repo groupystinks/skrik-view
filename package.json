@@ -1,5 +1,5 @@
 {
-  "name": "book-keeper",
+  "name": "skrik-view",
   "version": "0.0.1",
   "description": "see words as beautiful as it is on web.",
   "main": "App.js",
@@ -12,7 +12,7 @@
     "keyboardjs": "^0.4.2",
     "lodash": "^3.10.0",
     "marked": "^0.3.3",
-    "radium": "git://github.com/FormidableLabs/radium.git",
+    "radium": "^0.13.3",
     "react": "^0.13.2",
     "react-intl": "^1.2.0",
     "react-router": "^0.13.3",

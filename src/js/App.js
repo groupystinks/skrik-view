@@ -4,29 +4,20 @@ var {Component, PropTypes} = require('react');
 var {Observable} = require('rx-lite');
 var React = require('react/addons');
 var Router = require('react-router');
+var Radium = require('radium');
 
+var API = require('./stores/api/API');
 var KeyBinder = require('./components/KeyBinder');
 var Observer = require('./components/Observer');
 var PureRender = require('./components/PureRender');
-// var PassageActions = require('./actions/PassageActions');
+var PassageActions = require('./actions/PassageActions');
 var PassageStore = require('./stores/PassageStore');
-// var ThreadActions = require('./actions/ThreadActions');
+var ThreadActions = require('./actions/ThreadActions');
 var ThreadStore = require('./stores/ThreadStore');
-// var Scroller = require('./components/Scroller');
-// var Spinner = require('./components/Spinner');
-// var SearchBox = require('./components/SearchBox');
-// var LabelStore = require('./stores/LabelStore');
-// var BlockMessageList = require('./components/BlockMessageList');
-// var Colors = require('./components/Colors');
-// var isOffline = require('./components/isOffline');
-
-/*
-**debug
-*/
-var check = require('./stores/api/PassageAPI');
-/*
-**end of debug
-*/
+var Scroller = require('./components/Scroller');
+var LoadingSprint = require('./components/LoadingSprint');
+var BlockPassageList = require('./components/BlockPassageList');
+var Colors = require('./components/ColorMe');
 
 var RouteHandler = Router.RouteHandler;
 
@@ -37,6 +28,7 @@ var dummySubscription = {remove() {}};
 @KeyBinder
 @Observer
 @PureRender
+@Radium
 class App extends Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
@@ -48,6 +40,7 @@ class App extends Component {
     title: "A Portrait of the Artist as a Young Man",
     query: 'in:inbox',
     queryProgress: 'in:inbox',
+    isLoading: false,
   };
 
   // equiped with remove method for dummy
@@ -84,90 +77,186 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this._subscriptions = [];
+
+    this._subscriptions.push(API.subscribe('start', () => {
+      if (!this.state.isLoading) {
+        asap(() => this.setState({isLoading: true}));
+      }}));
+
+    this._subscriptions.push(API.subscribe('allStopped', () => {
+      asap(() => this.setState({isLoading: false}));
+    }));
+  }
+
+  componentWillUnmount() {
+    this._subscriptions.forEach(s => s.remove());
+  }
+
+  // keep it for extensibiltiy
+  _onRequestMoreItems = () => {
+    this.setState({maxResults: this.state.maxResults + SHEET_SIZE});
+  };
+
+  _onPassageSelected = (passage) => {
+    PassageActions.select(passage);
+  };
+
+  _selectNextPassage = () => {
+    this._onPassageSelected(this._getNextPassage());
+  };
+
+  _selectPreviousPassage = () => {
+    this._onPassageSelected(this._getPreviousPassage());
+  };
+
+  _getNextPassage() {
+    var passages = this.data.lastPassageInEachThread;
+    if (!passages) {
+      return null;
+    }
+
+    var selectedPassageIndex = this.props.params.passageName &&
+      passages.findIndex(
+        pass => pass.name === this.props.params.passageName
+      );
+
+    if (!this.props.params.passageName) {
+      return passages[0];
+    } else if (selectedPassageIndex < 0 || selectedPassageIndex === passages.length) {
+      return null;
+    } else {
+      return passages[selectedPassageIndex + 1];
+    }
+  }
+
+  _getPreviousPassage() {
+    var passages = this.data.lastPassageInEachThread;
+    if (!passages) {
+      return null;
+    }
+
+    var selectedPassageIndex = this.props.params.passageName &&
+      passages.findIndex(
+        pass => pass.name === this.props.params.passageName
+      );
+
+    if (!this.props.params.passageName) {
+      return passages[0];
+    } else if (selectedPassageIndex < 0 || selectedPassageIndex === passages.length) {
+      return null;
+    } else {
+      return passages[selectedPassageIndex - 1];
+    }
+  }
+
+  _onRefresh = () => {
+    ThreadActions.refresh();
+  };
+
+  _onLogoClick = () => {
+    window.location.reload();
+  };
+
   render():any {
+    console.log("passage in APP: ", this.data.lastPassageInEachThread);
     return (
-      <div>
-        <h1>Hihdsadassi</h1>
-        <div>{this.data.lastPassageInEachThread}</div>
-        <div>{this.data.threads}</div>
+      <div style={styles.app}>
+        {this.state.isLoading ? <LoadingSprint /> : null}
+
+        <div style={styles.header}>
+          <span onClick={this._onLogoClick} style={styles.logo}>
+            pX(!!)Xq
+            <span style={styles.logoName}>{' '}    Skrik</span>
+          </span>
+        </div>
+        <div style={styles.passages}>
+          {this.data.threads &&
+            this.data.lastPassageInEachThread ? (
+            <Scroller
+              isScrollContainer={true}
+              style={styles.passagesList}>
+              <BlockPassageList
+                passages={this.data.lastPassageInEachThread}
+                onPassageSelected={this._onPassageSelected}
+                selectedPassageName={this.props.params.passageName}
+              />
+            </Scroller>
+          ) : (
+            <div style={styles.passagesList} />
+          )}
+          <div style={styles.threadView}>
+            <RouteHandler
+              params={this.props.params}
+              title={this.state.title}
+            />
+          </div>
+        </div>
       </div>
     );
   }
 }
-let checkApp = new App();
-var cool = checkApp.observe();
 
 
-// // debug
-// var options = {
-//   download_url: [
-//     "https://raw.githubusercontent.com/groupystinks/skrik-view/master/data/A%20Portrait%20of%20the%20Artist%20as%20a%20Young%20Man/chapter%201.md",
-//     "https://raw.githubusercontent.com/groupystinks/skrik-view/master/data/A%20Portrait%20of%20the%20Artist%20as%20a%20Young%20Man/chapter%202.md",
-//     "https://raw.githubusercontent.com/groupystinks/skrik-view/master/data/A%20Portrait%20of%20the%20Artist%20as%20a%20Young%20Man/chapter%203.md",
-//     "https://raw.githubusercontent.com/groupystinks/skrik-view/master/data/A%20Portrait%20of%20the%20Artist%20as%20a%20Young%20Man/chapter%204.md",
-//     "https://raw.githubusercontent.com/groupystinks/skrik-view/master/data/A%20Portrait%20of%20the%20Artist%20as%20a%20Young%20Man/chapter%205.md"
-//   ],
-//   title: 'A Portrait of the Artist as a Young Man',
-// }
-// let checkPsgApi = check.getChapters(options);
+var styles = {
+  app: {
+    paddingTop: '20px',
+  },
 
-// var styles = {
-//   app: {
-//     paddingTop: '20px',
-//   },
-//
-//   header: {
-//     display: 'flex',
-//   },
-//
-//   logo: {
-//     color: Colors.accent,
-//     fontSize: '24px',
-//     fontWeight: 'bold',
-//     lineHeight: '32px',
-//     marginLeft: '12px',
-//   },
-//
-//   logoName: {
-//     marginRight: '12px',
-//     '@media (max-width: 800px)': {
-//       display: 'none',
-//     },
-//   },
-//
-//   search: {
-//     marginLeft: '12px',
-//   },
-//
-//   refresh: {
-//     marginLeft: '12px',
-//   },
-//
-//   style.passagesList: {
-//     bottom: 0,
-//     display: 'flex',
-//     left: 0,
-//     position: 'absolute',
-//     right: 0,
-//     top: '104px',
-//   },
-//
-//   passagesList: {
-//     flex: 1,
-//     height: '100%',
-//     minWidth: '300px',
-//     maxWidth: '400px',
-//   },
-//
-//   threadView: {
-//     flex: 2,
-//     height: '100%',
-//   },
-//
-//   passageLoading: {
-//     textAlign: 'center',
-//     padding: '20px',
-//   },
-// };
+  header: {
+    display: 'flex',
+  },
+
+  logo: {
+    color: Colors.irishGreen,
+    fontSize: '24px',
+    fontWeight: 'bold',
+    lineHeight: '32px',
+    marginLeft: '12px',
+  },
+
+  logoName: {
+    color: Colors.black,
+    marginRight: '12px',
+    '@media (max-width: 800px)': {
+      display: 'none',
+    },
+  },
+
+  search: {
+    marginLeft: '12px',
+  },
+
+  refresh: {
+    marginLeft: '12px',
+  },
+
+  passages: {
+    bottom: 0,
+    display: 'flex',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: '104px',
+  },
+
+  passagesList: {
+    flex: 1,
+    height: '100%',
+    minWidth: '300px',
+    maxWidth: '400px',
+  },
+
+  threadView: {
+    flex: 2,
+    height: '100%',
+  },
+
+  passageLoading: {
+    textAlign: 'center',
+    padding: '20px',
+  },
+};
 
 module.exports = App;

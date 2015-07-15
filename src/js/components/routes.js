@@ -1,5 +1,7 @@
-var App = require('./App');
-var ThreadView = require('./components/ThreadView');
+/** @flow */
+
+var App = require('../App');
+var ThreadView = require('./ThreadView');
 var React = require('react');
 var Router = require('react-router');
 
@@ -10,7 +12,7 @@ var routes = (
     <Route
       handler={ThreadView}
       name="thread"
-      path="/thread/:threadTitle/passage/:passageName"
+      path="/thread/:threadID/passage/:passageID"
     />
   </Route>
 );

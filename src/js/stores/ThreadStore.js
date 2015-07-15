@@ -5,11 +5,6 @@ var _ = require('lodash');
 var {Observable} = require('rx-lite');
 
 
-// type ListResult = {
-//   hasMore: bool;
-//   items: Array<Thread>;
-// };
-
 type PagingInfo = {
   fetchedResults: Array<Thread>;
   fetchedResultCount: number;
@@ -38,30 +33,33 @@ class ThreadStore extends BaseStore {
   /*
   ** not yet finished
   */
-  getByChapter(options:
-    {download_url: string;
+  getByName(options: {
       name: string;
       title: string;
-  }): Obervable {
-    return this.__wrapAsObservable(this._getByChapterSync, options);
+    }): Obervable {
+    return this.__wrapAsObservable(this._getByNameSync, options);
   }
 
-  _getByChapterSync = (options:
+  _getByNameSync = (options:
     {download_url: string;
     name: string;
     title: string;
   }) => {
     if (this._threadsByName.hasOwnProperty(options.name)) {
-      return this._threadsByName[options.name];
+      return new Array(this._threadsByName[options.name]);
     }
 
     // prevent double fetching
     this._threadsByName[options.name] = null;
 
-    ThreadAPI.getByChapter(options).then(item => {
-      this._threadsByName[item.name] = item;
-      this.emitChange();
-    });
+    /*
+     *
+     * preserve for extensibiltiy
+    */
+    // ThreadAPI.getByChapter(options).then(item => {
+    //   this._threadsByName[item.name] = item;
+    //   this.emitChange();
+    // });
 
     return null;
   };
