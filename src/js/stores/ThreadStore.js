@@ -30,23 +30,18 @@ class ThreadStore extends BaseStore {
     this._threadsByName = {};
   }
 
-  /*
-  ** not yet finished
-  */
+
   getByName(options: {
       name: string;
-      title: string;
     }): Obervable {
     return this.__wrapAsObservable(this._getByNameSync, options);
   }
 
-  _getByNameSync = (options:
-    {download_url: string;
-    name: string;
-    title: string;
-  }) => {
+  _getByNameSync = (options:{name: string;}) => {
     if (this._threadsByName.hasOwnProperty(options.name)) {
-      return new Array(this._threadsByName[options.name]);
+      return this._threadsByName[options.name] ? (
+        new Array(this._threadsByName[options.name])
+      ) : (null);
     }
 
     // prevent double fetching
@@ -63,7 +58,6 @@ class ThreadStore extends BaseStore {
 
     return null;
   };
-
 
 
   list(
@@ -105,7 +99,7 @@ class ThreadStore extends BaseStore {
     if (!this._pagingInfoByQuery[query]) {
       this._pagingInfoByQuery[query] = null;
     } else {
-      // am fetching, don't fetch again
+      // fetched, don't fetch again
       this._pagingInfoByQuery[query].isFetching = true;
     }
 
@@ -129,6 +123,7 @@ class ThreadStore extends BaseStore {
       this.emitChange();
     });
 
+    console.log('threads in ThreadStore: ', result);
     return result;
   };
 }

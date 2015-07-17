@@ -8,27 +8,28 @@ var {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
 @Radium
-class BlockPassageList extends Component {
+class BlockThreadList extends Component {
   static propTypes = {
-    passages: PropTypes.array.isRequired,
-    onPassageSelected: PropTypes.func.isRequired,
-    selectedPassageName: PropTypes.string,
+    processes: PropTypes.array.isRequired,
+    onThreadSelected: PropTypes.func.isRequired,
+    selectedThreadName: PropTypes.string,
   };
 
-  _onPassageClick = (index: number, passage: string) => {
-    this.props.onPassageSelected(passage);
+  _onThreadClick = (index: number, passage: string) => {
+    this.props.onThreadSelected(passage);
   };
 
   render(): any {
+    console.log('Process in BlockThreadList: ', this.props.processes);
     return (
       <ul style={[styles.list.root, this.style]}>
-        {this.props.passages.map((psg, index) => (
-          <BlockPassageListItem
+        {this.props.processes.map((pro, index) => (
+          <BlockThreadListItem
             index={index}
-            isSelected={psg.name === this.props.selectedPassageName}
             key={index}
-            passage={psg}
-            onClick={this._onPassageClick}
+            process={pro}
+            isSelected={pro.name === this.props.selectedPassageName}
+            onClick={this._onThreadClick}
           />
         ))}
       </ul>
@@ -39,12 +40,12 @@ class BlockPassageList extends Component {
 
 @PureRender
 @Radium
-class BlockPassageListItem extends Component {
+class BlockThreadListItem extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
-    isSelected: PropTypes.bool.isRequired,
-    passage: PropTypes.object.isRequired,
+    process: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired,
+    isSelected: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
@@ -64,14 +65,14 @@ class BlockPassageListItem extends Component {
   };
 
   _onClick = () => {
-    this.props.onClick(this.props.index, this.props.passage);
+    this.props.onClick(this.props.index, this.props.process);
   };
 
   render(): any {
-    var psg = this.props.passage;
+    var pro = this.props.process;
     return (
       <li
-        key={psg.id}
+        key={pro.name}
         onClick={this._onClick}
         style={styles.item.root}>
         <div style={[
@@ -80,10 +81,10 @@ class BlockPassageListItem extends Component {
         ]}>
           <LineClamp lines={2} style={styles.item.text}>
             <span>
-              {psg.title}{' '}
+              {pro.name}{' '}
             </span>
             <span style={styles.item.snippet}>
-              {_.unescape(psg.name)}…
+              {_.unescape(pro.name)}…
             </span>
           </LineClamp>
         </div>
@@ -139,4 +140,4 @@ var styles = {
   },
 };
 
-module.exports = BlockPassageList;
+module.exports = BlockThreadList;

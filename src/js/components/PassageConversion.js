@@ -13,9 +13,7 @@ function convertPassage(listResult:Array<string>, options): Array<PassagesList> 
   var passagesList = [];
   // markdown to HTML
   var bodyList = listResult.map(result => marked(result, {sanitize: true}));
-  var names = options.urls.map(url => {
-    return _.last(url.split('/')).split('%20').join(' ');
-  });
+  var names = options.names;
 
   for (let i = 0; i < listResult.length; i++) {
     passagesList[i] = {

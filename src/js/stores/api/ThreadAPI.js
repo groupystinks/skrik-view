@@ -8,9 +8,6 @@ var ActionType = require('../../constants/ActionType');
 
 declare class ListResult {
   items: Array<{
-    /*
-    ** snippet should be handled in View part?
-    */
     download_url: string;
     name: string;
     size: number;
@@ -41,27 +38,27 @@ function _wrapMeta(
 }
 
 
-function getByChapter(
-  options: {title: string, chapter: number}
-): Promise<Object> {
-  return API.wrap(() => {
-    return API.executeLocalRequest(
-      {title: options.title,
-        chapter: 'chapter ' + options.chapter}
-    ).then(markdown => {
-      _wrapMeta(markdown, options).then(result => {
-        return result;
-      });
-    });
-  });
-}
+// function getByChapter(
+//   options: {title: string, chapter: number}
+// ): Promise<Object> {
+//   return API.wrap(() => {
+//     return API.executeLocalRequest(
+//       {title: options.title,
+//         chapter: 'chapter ' + options.chapter}
+//     ).then(markdown => {
+//       _wrapMeta(markdown, options).then(result => {
+//         return result;
+//       });
+//     });
+//   });
+// }
 
 
 function list(
   options: {title: string;}
 ): Promise<ListResult> {
   return API.wrap(() => {
-    return API.requestThread({title: options.title})
+    return API.requestThread(options)
     .then(threadAndInfo => {
       var threads = threadAndInfo.threads || [];
       var info = threadAndInfo.info || '';
@@ -93,5 +90,4 @@ function list(
 
 module.exports = {
   list,
-  getByChapter,
 }

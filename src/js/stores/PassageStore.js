@@ -1,5 +1,3 @@
-
-// var API = require('./API');
 var ActionType = require('../constants/ActionType');
 var BaseStore = require('./BaseStore');
 var PassageAPI = require('./api/PassageAPI');
@@ -32,7 +30,8 @@ class PassageStore extends BaseStore {
       .compact()
       .value();
 
-    if (existing.length === options.names.length) {
+    if (existing.length === options.names.length ||
+          this._passagesByName.isFetching === true) {
       return existing;
     }
 
@@ -47,17 +46,26 @@ class PassageStore extends BaseStore {
       existing.map(passage => passage.url)
     ).slice(0, maxResults);
 
+    var namesToFetch = _.difference(
+      options.names,
+      existing.map(passage => passage.name)
+    ).slice(0, maxResults);
+
     var apiOptions = {
+      names: namesToFetch,
       urls: urlsToFetch,
       title: options.title,
     }
+
+    this._passagesByName.isFetching = true;
 
     PassageAPI.getByURLs(apiOptions).then(passagesList => {
 
       passagesList.forEach(passage => {
         this._passagesByName[passage.name] = passage;
       });
-      console.log('in PassageStore: ', this._passagesByName);
+      // console.log('in PassageStore: ', this._passagesByName);
+      this._passagesByName.isFetching = false;
       this.emitChange();
     });
 

@@ -21,8 +21,8 @@ class ProcessStore extends BaseStore {
   _listSync = () => {
     var result = null;
 
-    if (this._processInfo['all']) {
-      var processingInfo = this._processInfo['all'];
+    if (this._processInfo.hasOwnProperty('root')) {
+      var processingInfo = this._processInfo['root'];
       if (!processingInfo) {
         return null;
       }
@@ -31,22 +31,23 @@ class ProcessStore extends BaseStore {
         items: processingInfo.fetchedResults,
       };
 
-      if (processingInfo.isFetching) {
+      if (this._processInfo['root'].isFetching) {
         return result;
       }
-
+      
       return result;
     }
 
-    if (!this._processInfo['all']) {
-      this._processInfo['all'] = null;
+    if (!this._processInfo['root']) {
+      this._processInfo['root'] = null;
     } else {
-      this._processInfo['all'].isFetching = true;
+      this._processInfo['root'].isFetching = true;
     }
+
     ProcessAPI.list().then(listResult => {
       // Add to cache
       listResult.forEach(item => this._processByName[item.name] = item);
-      this._processInfo['all'] = {
+      this._processInfo['root'] = {
         fetchedResults: listResult,
         fetchedResultCount: listResult.length,
       };
@@ -59,4 +60,4 @@ class ProcessStore extends BaseStore {
   }
 }
 
-module.exports = new ProcessStore;
+module.exports = new ProcessStore();

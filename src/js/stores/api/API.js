@@ -54,6 +54,25 @@ function subscribe(
 }
 
 
+function requestProcess() {
+  return new RSVP.Promise((resolve, reject) => {
+    var dataUrl = 'https://api.github.com/repos/groupystinks/skrik-view/contents/data';
+    var urlOptions = {
+      url: dataUrl,
+      crossDomain: true,
+      type: 'GET',
+    };
+
+    $.ajax(urlOptions).done(threadObject => {
+      resolve(threadObject);
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      console.error(errorThrown);
+    });
+  });
+}
+
+
 function requestThread(options) {
   return new RSVP.Promise((resolve, reject) => {
     var listRequest = [];
@@ -66,7 +85,11 @@ function requestThread(options) {
       type: 'GET',
     };
 
-    $.ajax(urlOptions).done(data => {
+    var threadRequest = new RSVP.Promise((resolve, reject) => {
+      resolve($.ajax(urlOptions));
+    });
+
+    threadRequest.then(data => {
 
       var info = _.remove(data, function(n) {
         return n.name === 'INFO.md';
@@ -89,12 +112,12 @@ function requestThread(options) {
         resolve(threadAndInfo);
       });
     })
-    .fail((jqXHR, textStatus, errorThrown) => {
+    .catch((jqXHR, textStatus, errorThrown) => {
       console.error(errorThrown);
-
     });
   });
 }
+
 
 function requestPassages(options: {
   urls: Array<string>;
@@ -207,6 +230,7 @@ function _requestAsync(url) {
 
 
 module.exports = {
+  requestProcess,
   requestThread,
   requestPassages,
   subscribe,

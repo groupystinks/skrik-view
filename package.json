@@ -6,7 +6,6 @@
   "dependencies": {
     "asap": "^2.0.3",
     "es6-shim": "^0.31.0",
-    "google-caja": "0.0.2",
     "intl": "^0.1.4",
     "jquery": "^2.1.4",
     "keyboardjs": "^0.4.2",

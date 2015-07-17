@@ -25,7 +25,7 @@ class ThreadView extends Component {
     }
 
     const observeThread = ThreadStore.getByName(
-      {title: props.params.threadTitle, name: props.params.passageName}
+      {name: props.params.passageName}
     );
 
     const observePassage = observeThread.flatMap(thread => {
@@ -41,6 +41,7 @@ class ThreadView extends Component {
       options.urls = passageURLs;
       options.title = passageTitle;
       options.names = passageNames;
+      options.maxResults = 1;
 
       return PassageStore.getByURLs(options);
     });
@@ -53,7 +54,7 @@ class ThreadView extends Component {
 
   render(): ?ReactComponent {
     var passage = this.data.passage;
-    console.log("passage in ThreadView: ", passage);
+    // console.log("passage in ThreadView: ", passage);
 
     if (!passage) {
       return null;

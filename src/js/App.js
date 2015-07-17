@@ -7,19 +7,26 @@ var Router = require('react-router');
 var Radium = require('radium');
 
 var API = require('./stores/api/API');
+var ProcessActions = require('./actions/ProcessActions');
 var KeyBinder = require('./components/KeyBinder');
 var Observer = require('./components/Observer');
 var PureRender = require('./components/PureRender');
-var PassageActions = require('./actions/PassageActions');
-var PassageStore = require('./stores/PassageStore');
-var ThreadActions = require('./actions/ThreadActions');
-var ThreadStore = require('./stores/ThreadStore');
+var ProcessStore = require('./stores/ProcessStore');
 var Scroller = require('./components/Scroller');
 var LoadingSprint = require('./components/LoadingSprint');
-var BlockPassageList = require('./components/BlockPassageList');
+var BlockThreadList = require('./components/BlockThreadList');
 var Colors = require('./components/ColorMe');
 
 var RouteHandler = Router.RouteHandler;
+
+// /* debug
+//  * ----------------
+// */
+// var ProcessAPI = require('./stores/api/ProcessAPI');
+// ProcessAPI.list().then(result => .log("ProcessAPI: ", result));
+// /*
+//  * end of it
+// */
 
 var SHEET_SIZE = 10;
 
@@ -35,7 +42,7 @@ class App extends Component {
   };
 
   state = {
-    // isLoading: !isOffline(),
+    initialThread: 0,
     maxResults: SHEET_SIZE,
     title: "A Portrait of the Artist as a Young Man",
     query: 'in:inbox',
@@ -46,34 +53,59 @@ class App extends Component {
   // equiped with remove method for dummy
   _subscriptions = [dummySubscription];
 
+
   observe() {
-    var threadObservable = ThreadStore.list({
-      query: this.state.query,
-      maxResults: this.state.maxResults,
-      title: this.state.title,
-    });
+    var processObservable = ProcessStore.list();
+    // const threadObservable = ThreadStore.list({
+    //   query: this.state.query,
+    //   maxResults: this.state.maxResults,
+    //   title: this.state.title,
+    // });
+    // const threadObservable = processObservable.map(pro => {
+    //   console.log("processObservable in threadObservable: ", pro);
+    //   if (!pro) {
+    //     return Observable.return(null);
+    //   }
+    //
+    //   return pro.items.map(p => {
+    //     var options = {};
+    //     options.query = p.name;
+    //     options.title = p.name;
+    //     options.maxResults = this.state.maxResults;
+    //
+    //     return ThreadStore.list(options);
+    //   });
+    //     // var options = {};
+    //     // options.title = pro.items[0].name;
+    //     // options.query = this.state.query;
+    //     // options.maxResults = this.state.maxResults;
+    // });
+    //
+    // const passageObservable = threadObservable.flatMap(passagePack => {
+    //   console.log("threadObservable in passageObservable: ", passagePack);
+    //   if (!passagePack) {
+    //     return Observable.return(null);
+    //   }
+    //   var passageTitle = this.state.title;
+    //   var passageURLs = passagePack.items.map(thread => thread.download_url);
+    //   var passageNames= passagePack.items.map(thread => thread.name);
+    //
+    //   var options= {};
+    //   options.maxResults = this.state.maxResults;
+    //   options.urls = passageURLs;
+    //   options.title = passageTitle;
+    //   options.names = passageNames;
+    //
+    //   return PassageStore.getByURLs(options);
+    // });
+
+    /*
+     * debug
+    */
     return {
-      threads: threadObservable,
-      // Rx.Observable.prototype.flatMap(selector, [resultSelector])
-      //    selector (Function): A transform function to apply to each element or
-      //                         an observable sequence to project each element
-      //                         from the source sequence onto.
-      lastPassageInEachThread: threadObservable.flatMap(threads => {
-        if (!threads) {
-          return Observable.return(null);
-        }
-        var passageTitle = this.state.title;
-        var passageURLs = threads.items.map(thread => thread.download_url);
-        var passageNames= threads.items.map(thread => thread.name);
-
-        var options= {};
-        options.maxResults = this.state.maxResults;
-        options.urls = passageURLs;
-        options.title = passageTitle;
-        options.names = passageNames;
-
-        return PassageStore.getByURLs(options);
-      }),
+      processes: processObservable,
+      // threads: null,
+      // lastPassageInEachThread: null,
     };
   }
 
@@ -94,73 +126,15 @@ class App extends Component {
     this._subscriptions.forEach(s => s.remove());
   }
 
-  // keep it for extensibiltiy
-  _onRequestMoreItems = () => {
-    this.setState({maxResults: this.state.maxResults + SHEET_SIZE});
-  };
-
-  _onPassageSelected = (passage) => {
-    PassageActions.select(passage);
-  };
-
-  _selectNextPassage = () => {
-    this._onPassageSelected(this._getNextPassage());
-  };
-
-  _selectPreviousPassage = () => {
-    this._onPassageSelected(this._getPreviousPassage());
-  };
-
-  _getNextPassage() {
-    var passages = this.data.lastPassageInEachThread;
-    if (!passages) {
-      return null;
-    }
-
-    var selectedPassageIndex = this.props.params.passageName &&
-      passages.findIndex(
-        pass => pass.name === this.props.params.passageName
-      );
-
-    if (!this.props.params.passageName) {
-      return passages[0];
-    } else if (selectedPassageIndex < 0 || selectedPassageIndex === passages.length) {
-      return null;
-    } else {
-      return passages[selectedPassageIndex + 1];
-    }
-  }
-
-  _getPreviousPassage() {
-    var passages = this.data.lastPassageInEachThread;
-    if (!passages) {
-      return null;
-    }
-
-    var selectedPassageIndex = this.props.params.passageName &&
-      passages.findIndex(
-        pass => pass.name === this.props.params.passageName
-      );
-
-    if (!this.props.params.passageName) {
-      return passages[0];
-    } else if (selectedPassageIndex < 0 || selectedPassageIndex === passages.length) {
-      return null;
-    } else {
-      return passages[selectedPassageIndex - 1];
-    }
-  }
-
-  _onRefresh = () => {
-    ThreadActions.refresh();
-  };
-
   _onLogoClick = () => {
     window.location.reload();
   };
 
+  _onThreadSelected = (process) => {
+    ProcessActions.select(process);
+  };
+
   render():any {
-    console.log("passage in APP: ", this.data.lastPassageInEachThread);
     return (
       <div style={styles.app}>
         {this.state.isLoading ? <LoadingSprint /> : null}
@@ -171,25 +145,23 @@ class App extends Component {
             <span style={styles.logoName}>{' '}    Skrik</span>
           </span>
         </div>
-        <div style={styles.passages}>
-          {this.data.threads &&
-            this.data.lastPassageInEachThread ? (
-            <Scroller
-              isScrollContainer={true}
-              style={styles.passagesList}>
-              <BlockPassageList
-                passages={this.data.lastPassageInEachThread}
-                onPassageSelected={this._onPassageSelected}
-                selectedPassageName={this.props.params.passageName}
-              />
-            </Scroller>
-          ) : (
-            <div style={styles.passagesList} />
-          )}
-          <div style={styles.threadView}>
+        <div style={styles.threads}>
+        {this.data.processes ? (
+          <Scroller
+            isScrollContainer={true}
+            style={styles.threadList}>
+            <BlockThreadList
+              processes={this.data.processes.items}
+              onThreadSelected={this._onThreadSelected}
+              selectedThreadName={this.props.params.threadName}
+            />
+           </Scroller>
+         ) : (
+           <div style={styles.threadList} />
+         )}
+          <div style={styles.processView}>
             <RouteHandler
-              params={this.props.params}
-              title={this.state.title}
+             params={this.props.params}
             />
           </div>
         </div>
@@ -232,7 +204,7 @@ var styles = {
     marginLeft: '12px',
   },
 
-  passages: {
+  threads: {
     bottom: 0,
     display: 'flex',
     left: 0,
@@ -241,15 +213,15 @@ var styles = {
     top: '104px',
   },
 
-  passagesList: {
+  threadList: {
     flex: 1,
     height: '100%',
-    minWidth: '300px',
-    maxWidth: '400px',
+    minWidth: '100px',
+    maxWidth: '200px',
   },
 
-  threadView: {
-    flex: 2,
+  processView: {
+    flex: 1,
     height: '100%',
   },
 
