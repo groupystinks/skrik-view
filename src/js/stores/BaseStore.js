@@ -40,9 +40,9 @@ class BaseStore {
   ): Observable<TResult> {
     return Observable.create(observer => {
       observer.onNext(fn(options));
-      // view-controller, by subscribing the Observable, get subscription
+      // for CHANGE_EVENT
       var subscription = this.subscribe(() => observer.onNext(fn(options)));
-      // use subscription.remove to cleaning up
+      // use subscription.remove to clean up
       return () => subscription.remove();
     }).distinctUntilChanged(
       /*keySelector*/ null,

@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 function _resubscribe(component, props) {
   var newObservables = component.observe(props);
   var newSubscriptions = {};
@@ -7,7 +9,7 @@ function _resubscribe(component, props) {
       function onNext(value) {
         component.data[key] = value;
 
-        if(component.data[key] != component._observerLastData[key]) {
+        if(!_.isEqual(component.data[key], component._observerLastData[key])) {
           component._observerCalledForceUpdate = true;
           component.forceUpdate();
         }

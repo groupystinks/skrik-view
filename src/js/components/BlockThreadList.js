@@ -28,7 +28,7 @@ class BlockThreadList extends Component {
             index={index}
             key={index}
             process={pro}
-            isSelected={pro.name === this.props.selectedPassageName}
+            isSelected={pro.name === this.props.selectedThreadName}
             onClick={this._onThreadClick}
           />
         ))}

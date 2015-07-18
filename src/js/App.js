@@ -19,15 +19,6 @@ var Colors = require('./components/ColorMe');
 
 var RouteHandler = Router.RouteHandler;
 
-// /* debug
-//  * ----------------
-// */
-// var ProcessAPI = require('./stores/api/ProcessAPI');
-// ProcessAPI.list().then(result => .log("ProcessAPI: ", result));
-// /*
-//  * end of it
-// */
-
 var SHEET_SIZE = 10;
 
 var dummySubscription = {remove() {}};
@@ -56,56 +47,9 @@ class App extends Component {
 
   observe() {
     var processObservable = ProcessStore.list();
-    // const threadObservable = ThreadStore.list({
-    //   query: this.state.query,
-    //   maxResults: this.state.maxResults,
-    //   title: this.state.title,
-    // });
-    // const threadObservable = processObservable.map(pro => {
-    //   console.log("processObservable in threadObservable: ", pro);
-    //   if (!pro) {
-    //     return Observable.return(null);
-    //   }
-    //
-    //   return pro.items.map(p => {
-    //     var options = {};
-    //     options.query = p.name;
-    //     options.title = p.name;
-    //     options.maxResults = this.state.maxResults;
-    //
-    //     return ThreadStore.list(options);
-    //   });
-    //     // var options = {};
-    //     // options.title = pro.items[0].name;
-    //     // options.query = this.state.query;
-    //     // options.maxResults = this.state.maxResults;
-    // });
-    //
-    // const passageObservable = threadObservable.flatMap(passagePack => {
-    //   console.log("threadObservable in passageObservable: ", passagePack);
-    //   if (!passagePack) {
-    //     return Observable.return(null);
-    //   }
-    //   var passageTitle = this.state.title;
-    //   var passageURLs = passagePack.items.map(thread => thread.download_url);
-    //   var passageNames= passagePack.items.map(thread => thread.name);
-    //
-    //   var options= {};
-    //   options.maxResults = this.state.maxResults;
-    //   options.urls = passageURLs;
-    //   options.title = passageTitle;
-    //   options.names = passageNames;
-    //
-    //   return PassageStore.getByURLs(options);
-    // });
 
-    /*
-     * debug
-    */
     return {
       processes: processObservable,
-      // threads: null,
-      // lastPassageInEachThread: null,
     };
   }
 

@@ -36,9 +36,6 @@ class ProcessView extends Component {
   };
 
   observe() {
-    /*
-     * there's performance issue here.
-    */
     var threadObservable = ThreadStore.list({
       query: this.props.params.threadTitle,
       maxResults: this.state.maxResults,

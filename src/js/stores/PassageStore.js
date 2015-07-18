@@ -69,7 +69,7 @@ class PassageStore extends BaseStore {
       this.emitChange();
     });
 
-    return existing;
+    return null;
   };
 
   getByURLs(options: {
