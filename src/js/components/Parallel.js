@@ -20,9 +20,21 @@ class Parallel extends Component {
 }
 
 
-var spinKeyframe = Radium.keyframes({
+var spinKeepKeyframe = Radium.keyframes({
   '0%': {transform: 'rotateZ(0deg)'},
   '100%': {transform: 'rotateZ(360deg)'},
+});
+
+var spinRemoveKeyframe = Radium.keyframes({
+  '0%': {
+    transform: 'rotateZ(0deg)',
+    borderColor: 'rgba(0, 153, 0, 1)',
+  },
+
+  '100%': {
+    transform: 'rotateZ(360deg)',
+    borderColor: 'rgba(0, 153, 0, 0)',
+  },
 });
 
 var styles = {
@@ -31,26 +43,33 @@ var styles = {
   },
 
   divs: {
-    borderLeft: '3px solid ' + Colors.irishGreen,
-    animation: spinKeyframe + ' 2s 1 linear',
+
   },
 
   first: {
-    width: '50px',
-    height: '50px',
-    marginTop: '-15px',
+    width: '30px',
+    height: '40px',
+    margin: '-10px -15px 0 10px',
+    borderLeft: '3px solid ' + Colors.irishGreen,
+    animation: spinKeepKeyframe + ' 2s 1 linear',
   },
 
   second: {
-    width: '40px',
-    height: '40px',
+    width: '20px',
+    height: '30px',
     margin: '5px',
+    borderLeft: '3px solid ',
+    borderColor: 'rgba(0, 153, 0, 0)',
+    animation: spinRemoveKeyframe + ' 2s 1 linear',
   },
 
   third: {
-    width: '30px',
-    height: '30px',
+    width: '10px',
+    height: '20px',
     margin: '5px',
+    borderLeft: '3px solid ',
+    borderColor: 'rgba(0, 153, 0, 0)',
+    animation: spinRemoveKeyframe + ' 2s 1 linear',
   },
 };
 

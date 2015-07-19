@@ -97,8 +97,9 @@ class App extends Component {
 
         <div style={styles.header}>
           <span onClick={this._onLogoClick} style={styles.logo}>
+            <span style={styles.logoChinese}>吶喊{' '}</span>
             <Parallel />
-            <span style={styles.logoName}> Skrik</span>
+            <span style={styles.logoName}>{' '}Skrik</span>
           </span>
           <ShriekButton onClick={this._onToggleView}>
             <Toggler
@@ -154,6 +155,14 @@ var styles = {
   },
 
   logoName: {
+    color: Colors.irishGreen.saturate(40),
+    marginRight: '12px',
+    '@media (max-width: 800px)': {
+      display: 'none',
+    },
+  },
+
+  logoNameChinese: {
     color: Colors.irishGreen.saturate(40),
     marginRight: '12px',
     '@media (max-width: 800px)': {
