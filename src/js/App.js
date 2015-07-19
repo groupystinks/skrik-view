@@ -14,6 +14,9 @@ var PureRender = require('./components/PureRender');
 var ProcessStore = require('./stores/ProcessStore');
 var Scroller = require('./components/Scroller');
 var LoadingSprint = require('./components/LoadingSprint');
+var Toggler = require('./components/Toggler');
+var Parallel = require('./components/Parallel');
+var ShriekButton = require('./components/ShriekButton');
 var BlockThreadList = require('./components/BlockThreadList');
 var Colors = require('./components/ColorMe');
 
@@ -33,11 +36,9 @@ class App extends Component {
   };
 
   state = {
-    initialThread: 0,
+    threadListDisplay: true,
+    passagesListDisplay: true,
     maxResults: SHEET_SIZE,
-    title: "A Portrait of the Artist as a Young Man",
-    query: 'in:inbox',
-    queryProgress: 'in:inbox',
     isLoading: false,
   };
 
@@ -70,6 +71,17 @@ class App extends Component {
     this._subscriptions.forEach(s => s.remove());
   }
 
+  _onToggleView = () => {
+    if (this.state.threadListDisplay && this.state.passagesListDisplay) {
+      this.setState({threadListDisplay: false});
+    } else if (this.state.passagesListDisplay) {
+      this.setState({passagesListDisplay: false})
+    } else {
+      this.setState({threadListDisplay: true});
+      this.setState({passagesListDisplay: true});
+    }
+  }
+
   _onLogoClick = () => {
     window.location.reload();
   };
@@ -85,19 +97,26 @@ class App extends Component {
 
         <div style={styles.header}>
           <span onClick={this._onLogoClick} style={styles.logo}>
-            pX(!!)Xq
-            <span style={styles.logoName}>{' '}    Skrik</span>
+            <Parallel />
+            <span style={styles.logoName}> Skrik</span>
           </span>
+          <ShriekButton onClick={this._onToggleView}>
+            <Toggler
+              threadDisplay={this.state.threadListDisplay}
+              passagesDisplay={this.state.passagesListDisplay}
+            />
+          </ShriekButton>
         </div>
         <div style={styles.threads}>
         {this.data.processes ? (
           <Scroller
             isScrollContainer={true}
-            style={styles.threadList}>
+            style={styles.threadList}
+            isDisplayed={this.state.threadListDisplay}>
             <BlockThreadList
               processes={this.data.processes.items}
               onThreadSelected={this._onThreadSelected}
-              selectedThreadName={this.props.params.threadName}
+              selectedThreadTitle={this.props.params.threadTitle}
             />
            </Scroller>
          ) : (
@@ -106,6 +125,7 @@ class App extends Component {
           <div style={styles.processView}>
             <RouteHandler
              params={this.props.params}
+             passagesListDisplay={this.state.passagesListDisplay}
             />
           </div>
         </div>
@@ -125,6 +145,7 @@ var styles = {
   },
 
   logo: {
+    display: 'inherit',
     color: Colors.irishGreen,
     fontSize: '24px',
     fontWeight: 'bold',
@@ -133,15 +154,11 @@ var styles = {
   },
 
   logoName: {
-    color: Colors.black,
+    color: Colors.irishGreen.saturate(40),
     marginRight: '12px',
     '@media (max-width: 800px)': {
       display: 'none',
     },
-  },
-
-  search: {
-    marginLeft: '12px',
   },
 
   refresh: {
@@ -158,6 +175,7 @@ var styles = {
   },
 
   threadList: {
+    borderRight: '1px solid ' + Colors.gray1,
     flex: 1,
     height: '100%',
     minWidth: '100px',

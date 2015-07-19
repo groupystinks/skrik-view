@@ -1,6 +1,7 @@
 var Color = require('./ColorGen');
 
 var Colors = {
+  whiteSmoke: new Color('F5F5F5'),
   irishGreen: new Color('#009900'),
   black: new Color('#000'),
   tinyPink: new Color('#ffdbdb'),

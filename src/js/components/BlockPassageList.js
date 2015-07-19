@@ -2,7 +2,6 @@ var Colors = require('./ColorMe');
 var LineClamp = require('./LineClamp');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
-var React = require('react/addons');
 var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
@@ -79,11 +78,8 @@ class BlockPassageListItem extends Component {
           this.props.isSelected && styles.item.innerIsSelected
         ]}>
           <LineClamp lines={2} style={styles.item.text}>
-            <span>
-              {psg.title}{' '}
-            </span>
             <span style={styles.item.snippet}>
-              {_.unescape(psg.name)}…
+              {_.unescape(psg.markdown)}…
             </span>
           </LineClamp>
         </div>

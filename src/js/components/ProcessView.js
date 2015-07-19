@@ -27,6 +27,7 @@ var SHEET_SIZE = 10;
 @Radium
 class ProcessView extends Component {
   static propTypes = {
+    passagesListDisplay: PropTypes.bool,
     params: PropTypes.object.isRequired,
     style: PropTypes.object,
   };
@@ -35,31 +36,33 @@ class ProcessView extends Component {
     maxResults: SHEET_SIZE,
   };
 
-  observe() {
-    var threadObservable = ThreadStore.list({
-      query: this.props.params.threadTitle,
+  observe(props, context) {
+    const threadObservable = ThreadStore.list({
+      query: props.params.threadTitle,
       maxResults: this.state.maxResults,
-      title: this.props.params.threadTitle,
+      title: props.params.threadTitle,
+    });
+
+    const passageObservable = threadObservable.flatMap(passagePack => {
+      if (!passagePack) {
+        return Observable.return(null);
+      }
+      var passageTitle = this.props.params.threadTitle;
+      var passageURLs = passagePack.items.map(thread => thread.download_url);
+      var passageNames= passagePack.items.map(thread => thread.name);
+
+      var options= {};
+      options.maxResults = this.state.maxResults;
+      options.urls = passageURLs;
+      options.title = passageTitle;
+      options.names = passageNames;
+
+      return PassageStore.getByURLs(options);
     });
 
     return {
       threads: threadObservable,
-      lastPassageInEachThread: threadObservable.flatMap(passagePack => {
-        if (!passagePack) {
-          return Observable.return(null);
-        }
-        var passageTitle = this.props.params.threadTitle;
-        var passageURLs = passagePack.items.map(thread => thread.download_url);
-        var passageNames= passagePack.items.map(thread => thread.name);
-
-        var options= {};
-        options.maxResults = this.state.maxResults;
-        options.urls = passageURLs;
-        options.title = passageTitle;
-        options.names = passageNames;
-
-        return PassageStore.getByURLs(options);
-      }),
+      lastPassageInEachThread: passageObservable,
     };
   }
 
@@ -134,7 +137,8 @@ class ProcessView extends Component {
             this.data.lastPassageInEachThread ? (
             <Scroller
               isScrollContainer={true}
-              style={styles.passagesList}>
+              style={styles.passagesList}
+              isDisplayed={this.props.passagesListDisplay}>
               <BlockPassageList
                 passages={this.data.lastPassageInEachThread}
                 onPassageSelected={this._onPassageSelected}
@@ -163,6 +167,7 @@ var styles = {
   },
 
   passagesList: {
+    borderRight: '1px solid ' + Colors.gray1,
     flex: 1,
     height: '100%',
     minWidth: '300px',

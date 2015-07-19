@@ -34,7 +34,7 @@ class ProcessStore extends BaseStore {
       if (this._processInfo['root'].isFetching) {
         return result;
       }
-      
+
       return result;
     }
 
@@ -52,7 +52,6 @@ class ProcessStore extends BaseStore {
         fetchedResultCount: listResult.length,
       };
 
-      console.log("processes in ProcessStore: ", listResult);
       this.emitChange();
     });
 

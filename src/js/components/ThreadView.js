@@ -71,7 +71,6 @@ class ThreadView extends Component {
         <div style={styles.passage}>
           {passage.map(psg => (
             <PassageView
-              isExpandedInitially={true}
               key={psg.name}
               passage={psg}
             />

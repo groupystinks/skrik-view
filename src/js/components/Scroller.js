@@ -23,6 +23,7 @@ class Scroller extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     style: PropTypes.object,
+    isDisplayed: PropTypes.bool,
   };
 
   _previousUserSelect = '';
@@ -104,7 +105,11 @@ class Scroller extends Component {
       <div
         onMouseEnter={this._onScrollerMouseEnter}
         onMouseLeave={this._onScrollerMouseLeave}
-        style={[this.props.style, styles.scroller]}>
+        style={[
+          this.props.style,
+          styles.scroller,
+          !this.props.isDisplayed && styles.displayNone
+          ]}>
         <div
           onMouseDown={this._onScrollbarMouseDown}
           style={[
@@ -130,6 +135,10 @@ class Scroller extends Component {
 }
 
 var styles = {
+  displayNone: {
+    display: 'none',
+  },
+
   scroller: {
     overflow: 'hidden',
     position: 'relative',

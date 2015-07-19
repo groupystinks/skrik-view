@@ -2,7 +2,6 @@ var Colors = require('./ColorMe');
 var LineClamp = require('./LineClamp');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
-var React = require('react/addons');
 var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
@@ -12,7 +11,7 @@ class BlockThreadList extends Component {
   static propTypes = {
     processes: PropTypes.array.isRequired,
     onThreadSelected: PropTypes.func.isRequired,
-    selectedThreadName: PropTypes.string,
+    selectedThreadTitle: PropTypes.string,
   };
 
   _onThreadClick = (index: number, passage: string) => {
@@ -20,7 +19,6 @@ class BlockThreadList extends Component {
   };
 
   render(): any {
-    console.log('Process in BlockThreadList: ', this.props.processes);
     return (
       <ul style={[styles.list.root, this.style]}>
         {this.props.processes.map((pro, index) => (
@@ -28,7 +26,7 @@ class BlockThreadList extends Component {
             index={index}
             key={index}
             process={pro}
-            isSelected={pro.name === this.props.selectedThreadName}
+            isSelected={pro.name === this.props.selectedThreadTitle}
             onClick={this._onThreadClick}
           />
         ))}
@@ -83,9 +81,6 @@ class BlockThreadListItem extends Component {
             <span>
               {pro.name}{' '}
             </span>
-            <span style={styles.item.snippet}>
-              {_.unescape(pro.name)}…
-            </span>
           </LineClamp>
         </div>
       </li>
@@ -93,6 +88,10 @@ class BlockThreadListItem extends Component {
   }
 }
 
+
+/*
+ * TODO: box-shadow
+*/
 var styles = {
   list: {
     root: {
@@ -117,25 +116,21 @@ var styles = {
       padding: '8px 12px 12px 12px',
 
       ':hover': {
-        background: Colors.irishGreen.lighten(44),
+        background: Colors.whiteSmoke,
       }
     },
 
     innerIsSelected: {
-      background: Colors.irishGreen,
-      color: 'white',
+      background: Colors.whiteSmoke.darken(8),
+      color: Colors.black,
 
       ':hover': {
-        background: Colors.irishGreen,
+        background: Colors.whiteSmoke.darken(8),
       }
     },
 
     text: {
       fontSize: '14px',
-    },
-
-    snippet: {
-      opacity: 0.5,
     },
   },
 };
