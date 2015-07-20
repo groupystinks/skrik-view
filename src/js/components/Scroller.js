@@ -26,6 +26,16 @@ class Scroller extends Component {
     isDisplayed: PropTypes.bool,
   };
 
+  constructor() {
+    super();
+
+    this.state = {
+      scrollTop: 0,
+      scrollHeight: 1,
+      offsetHeight: 1,
+    };
+  }
+
   _previousUserSelect = '';
   _isMouseDown = false;
   _lastPageY = 0;

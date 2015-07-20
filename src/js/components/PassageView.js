@@ -36,6 +36,7 @@ class PassageView extends Component {
         <div style={styles.inner}>
           <div
             style={styles.bodyStyle}
+            className='readingContent'
             dangerouslySetInnerHTML={{
               __html: psg.body
             }}
@@ -53,7 +54,6 @@ var styles = {
 
   bodyStyle: {
     fontFamily: window.getComputedStyle(document.body).fontFamily,
-    fontSize: '14px',
     padding: '12px',
   },
 

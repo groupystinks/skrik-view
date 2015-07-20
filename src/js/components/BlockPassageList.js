@@ -79,7 +79,7 @@ class BlockPassageListItem extends Component {
         ]}>
           <LineClamp lines={2} style={styles.item.text}>
             <span style={styles.item.snippet}>
-              {_.unescape(psg.markdown)}…
+              {_.unescape(psg.snippet)}…
             </span>
           </LineClamp>
         </div>
