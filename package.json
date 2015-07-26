@@ -1,19 +1,17 @@
 {
   "name": "skrik-view",
   "version": "0.0.1",
-  "description": "see words as beautiful as it is on web.",
+  "description": "吶喊",
   "main": "App.js",
   "dependencies": {
     "asap": "^2.0.3",
     "es6-shim": "^0.31.0",
-    "intl": "^0.1.4",
     "jquery": "^2.1.4",
     "keyboardjs": "^0.4.2",
     "lodash": "^3.10.0",
     "marked": "^0.3.3",
     "radium": "^0.13.3",
     "react": "^0.13.2",
-    "react-intl": "^1.2.0",
     "react-router": "^0.13.3",
     "rsvp": "^3.0.18",
     "rx-lite": "^2.5.2",
@@ -32,6 +30,7 @@
     "randomstring": "^1.0.7",
     "react-hot-loader": "^1.2.6",
     "rimraf": "^2.3.3",
+    "static-site-generator-webpack-plugin": "^1.0.0",
     "webpack": "^1.8.11",
     "webpack-dev-server": "^1.8.2"
   },

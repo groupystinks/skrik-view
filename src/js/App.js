@@ -42,7 +42,6 @@ class App extends Component {
     isLoading: false,
   };
 
-  // equiped with remove method for dummy
   _subscriptions = [dummySubscription];
 
 

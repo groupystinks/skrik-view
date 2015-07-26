@@ -29,11 +29,6 @@ module.exports = function(options) {
           test: /\.js$/,
           loaders: ['babel?stage=0'],
           include: path.join(__dirname, 'src/js')
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader',
-          include: path.join(__dirname, 'node_modules/request')
         }
       ]
     },

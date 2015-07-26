@@ -1,6 +1,5 @@
 var ActionType = {
   Passage: {
-    ADD_MANY: '',
     SELECT: '',
   },
 

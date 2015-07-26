@@ -139,51 +139,6 @@ function requestPassages(options: {
   });
 }
 
-// /*
-// * TODO
-// * There's no local on github
-// * Need to modify readFile method
-// */
-// function executeLocalRequest(options) {
-//   return new RSVP.Promise((resolve, reject) => {
-//     if (!options.chapter && options.maxResults) {
-//
-//       var result = '';
-//       var listRequest = [];
-//       var listResult = [];
-//       // pathname breaks, wait to push into Githun
-//       var pathname = path.join(dataDir, options.title);
-//
-//       fs.readdir(pathname, (err, files) => {
-//         _.pull(files, 'INFO.md');
-//
-//         // chaptername vs maxResults
-//         files.forEach(chaptername => {
-//           listRequest.push(_readFileAsync(pathname, chaptername));
-//         });
-//
-//         RSVP.all(listRequest)
-//         .then((listResult) => {
-//           resolve(listResult);
-//         });
-//       });
-//
-//     } else {
-//       var result = '';
-//       var pathname = path.join(dataDir, options.title, options.chapter + '.md')
-//       fs.readFile(pathname, function(err, data) {
-//         result += data;
-//
-//         if (err) {
-//           reject(err);
-//         };
-//
-//         resolve(result);
-//       });
-//     }
-//   });
-// }
-
 function extractMeta(options) {
   return new RSVP.Promise((resolve, reject) => {
     _requestAsync(options.info.download_url)
@@ -192,22 +147,6 @@ function extractMeta(options) {
     });
   });
 }
-
-// function _readFileAsync(pathname, chaptername) {
-//   return new RSVP.Promise((resolve, reject) => {
-//     var result = '';
-//     var filepath = path.join(pathname, chaptername);
-//
-//     fs.readFile(filepath, function(err, data) {
-//       if (err) {
-//         rejcet(err);
-//       }
-//       result += data;
-//       resolve(result);
-//     });
-//
-//   });
-// }
 
 function _requestAsync(url) {
   return new RSVP.Promise((resolve, reject) => {

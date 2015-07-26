@@ -17,7 +17,7 @@ function _resubscribe(component, props) {
         component._observerLastData[key] = value;
       },
       // debug
-      function onError(err) { console.error(err, err.stack); },
+      function onError() {},
       function onCompleted() {},
     );
   });
