@@ -1,4 +1,3 @@
-var KeyBinder = require('./KeyBinder');
 var PassageStore = require('../stores/PassageStore');
 var PassageView = require('./PassageView');
 var Observer = require('./Observer');
@@ -9,12 +8,13 @@ var {Component, PropTypes} = require('react');
 var {Observable} = require('rx-lite');
 
 
-@KeyBinder
 @Observer
 @PureRender
 @Radium
 class ThreadView extends Component {
   static propTypes = {
+    threadListDisplay: PropTypes.bool,
+    passagesListDisplay: PropTypes.bool,
     params: PropTypes.object.isRequired,
     style: PropTypes.object,
   };
@@ -33,13 +33,18 @@ class ThreadView extends Component {
         return Observable.return(null);
       }
 
-      var passageTitle = thread.map(t => t.title);
+      var passageTitle = thread.map(t => {
+        var dataPathChain = _(t.path.split("/"));
+        return dataPathChain.pull('data', t.name).first() ||
+                            this.props.params.threadTitle;
+      });
       var passageURLs = thread.map(t => t.download_url);
       var passageNames= thread.map(t => t.name);
 
       var options= {};
       options.urls = passageURLs;
-      options.title = passageTitle;
+      // title gotta be string, not array
+      options.title = _.first(passageTitle);
       options.names = passageNames;
       options.maxResults = 1;
 
@@ -71,6 +76,8 @@ class ThreadView extends Component {
         <div style={styles.passage}>
           {passage.map(psg => (
             <PassageView
+              threadListDisplay={this.props.threadListDisplay}
+              passagesListDisplay={this.props.passagesListDisplay}
               key={psg.name}
               passage={psg}
             />

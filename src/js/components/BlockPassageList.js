@@ -68,6 +68,7 @@ class BlockPassageListItem extends Component {
 
   render(): any {
     var psg = this.props.passage;
+    var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     return (
       <li
         key={psg.id}
@@ -77,11 +78,15 @@ class BlockPassageListItem extends Component {
           styles.item.inner,
           this.props.isSelected && styles.item.innerIsSelected
         ]}>
+          {is_firefox ?
+          (<span style={styles.item.snippet}>
+            {_.unescape(psg.snippet.slice(0,50))}…
+          </span>):(
           <LineClamp lines={2} style={styles.item.text}>
             <span style={styles.item.snippet}>
               {_.unescape(psg.snippet)}…
             </span>
-          </LineClamp>
+          </LineClamp>)}
         </div>
       </li>
     );
@@ -91,6 +96,7 @@ class BlockPassageListItem extends Component {
 var styles = {
   list: {
     root: {
+      paddingLeft: '20px',
       cursor: 'pointer',
       userSelect: 'none',
     }
@@ -101,6 +107,7 @@ var styles = {
       display: 'block',
       lineHeight: 1.6,
       margin: '0 8px 8px 8px',
+      borderBottom: '1px solid #eee',
     },
 
     rootFirst: {

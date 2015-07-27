@@ -238,6 +238,7 @@
             sty.textOverflow = 'ellipsis';
             sty.webkitBoxOrient = 'vertical';
             sty.display = '-webkit-box';
+            // sty.display = 'inline-block';
             sty.webkitLineClamp = clampValue;
 
             if (isCSSValue) {

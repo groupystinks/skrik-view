@@ -13,12 +13,12 @@ class Toggler extends Component {
 
   render(): any {
     return (
-      <a
+      <div
         style={styles.aToggle}>
         <span>| </span>
         {this.props.threadDisplay ? <span>| </span>  : null}
         {this.props.passagesDisplay ? <span>|</span>  : null}
-      </a>
+      </div>
     );
   }
 }

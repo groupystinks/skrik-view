@@ -9,7 +9,6 @@ var PassageActions = require('../actions/PassageActions');
 var PassageStore = require('../stores/PassageStore');
 var ThreadStore = require('../stores/ThreadStore');
 var ThreadActions = require('../actions/ThreadActions');
-var KeyBinder = require('./KeyBinder');
 var Observer = require('./Observer');
 var PureRender = require('./PureRender');
 var Scroller = require('./Scroller');
@@ -27,6 +26,7 @@ var SHEET_SIZE = 10;
 @Radium
 class ProcessView extends Component {
   static propTypes = {
+    threadListDisplay: PropTypes.bool,
     passagesListDisplay: PropTypes.bool,
     params: PropTypes.object.isRequired,
     style: PropTypes.object,
@@ -47,7 +47,12 @@ class ProcessView extends Component {
       if (!passagePack) {
         return Observable.return(null);
       }
-      var passageTitle = this.props.params.threadTitle;
+
+      var firstThread = _.first(passagePack.items);
+      var dataPathChain = _(firstThread.path.split("/"));
+      var passageTitle = dataPathChain.pull('data', firstThread.name).first() ||
+                          this.props.params.threadTitle;
+
       var passageURLs = passagePack.items.map(thread => thread.download_url);
       var passageNames= passagePack.items.map(thread => thread.name);
 
@@ -62,7 +67,7 @@ class ProcessView extends Component {
 
     return {
       threads: threadObservable,
-      lastPassageInEachThread: passageObservable,
+      passagesInEachThread: passageObservable,
     };
   }
 
@@ -91,7 +96,7 @@ class ProcessView extends Component {
   };
 
   _getNextPassage() {
-    var passages = this.data.lastPassageInEachThread;
+    var passages = this.data.passagesInEachThread;
     if (!passages) {
       return null;
     }
@@ -111,7 +116,7 @@ class ProcessView extends Component {
   }
 
   _getPreviousPassage() {
-    var passages = this.data.lastPassageInEachThread;
+    var passages = this.data.passagesInEachThread;
     if (!passages) {
       return null;
     }
@@ -134,13 +139,13 @@ class ProcessView extends Component {
     return(
         <div style={styles.root}>
           {this.data.threads &&
-            this.data.lastPassageInEachThread ? (
+            this.data.passagesInEachThread ? (
             <Scroller
               isScrollContainer={true}
               style={styles.passagesList}
               isDisplayed={this.props.passagesListDisplay}>
               <BlockPassageList
-                passages={this.data.lastPassageInEachThread}
+                passages={this.data.passagesInEachThread}
                 onPassageSelected={this._onPassageSelected}
                 selectedPassageName={this.props.params.passageName}
               />
@@ -153,6 +158,8 @@ class ProcessView extends Component {
           <div style={styles.threadView}>
             <RouteHandler
               params={this.props.params}
+              threadListDisplay={this.props.threadListDisplay}
+              passagesListDisplay={this.props.passagesListDisplay}
             />
           </div>
         </div>

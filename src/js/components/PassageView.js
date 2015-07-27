@@ -9,6 +9,8 @@ var {Component, PropTypes, findDOMNode} = require('react/addons');
 @Radium
 class PassageView extends Component {
   static propTypes = {
+    threadListDisplay: PropTypes.bool,
+    passagesListDisplay: PropTypes.bool,
     passage: PropTypes.object,
     style: PropTypes.object,
   };
@@ -53,6 +55,8 @@ var styles = {
   },
 
   bodyStyle: {
+    maxWidth: '780px',
+    margin: 'auto',
     fontFamily: window.getComputedStyle(document.body).fontFamily,
     padding: '12px',
   },

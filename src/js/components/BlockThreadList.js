@@ -4,6 +4,7 @@ var PureRender = require('./PureRender');
 var Radium = require('radium');
 var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
+var fileImage = require('../../images/file16.png');
 
 @PureRender
 @Radium
@@ -68,6 +69,7 @@ class BlockThreadListItem extends Component {
 
   render(): any {
     var pro = this.props.process;
+    var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     return (
       <li
         key={pro.name}
@@ -77,11 +79,18 @@ class BlockThreadListItem extends Component {
           styles.item.inner,
           this.props.isSelected && styles.item.innerIsSelected
         ]}>
-          <LineClamp lines={2} style={styles.item.text}>
-            <span>
-              {pro.name}{' '}
-            </span>
-          </LineClamp>
+          <span><img src={fileImage} style={styles.item.image}/></span>
+          {is_firefox ?
+          (<span style={styles.item.snippet}>
+            {pro.name}{' '}
+          </span>):(
+          <span style={styles.item.lineClampWrapper}>
+            <LineClamp lines={2} style={styles.item.text}>
+              <span style={styles.item.snippet}>
+                {pro.name}{' '}
+              </span>
+            </LineClamp>
+          </span>)}
         </div>
       </li>
     );
@@ -105,6 +114,16 @@ var styles = {
       display: 'block',
       lineHeight: 1.6,
       margin: '0 8px 8px 8px',
+    },
+
+    image: {
+      position: 'relative',
+      paddingRight: "5px",
+      verticalAlign: 'top',
+    },
+
+    lineClampWrapper: {
+      display: 'inline-block',
     },
 
     rootFirst: {

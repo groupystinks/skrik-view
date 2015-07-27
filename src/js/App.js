@@ -5,10 +5,8 @@ var {Observable} = require('rx-lite');
 var React = require('react/addons');
 var Router = require('react-router');
 var Radium = require('radium');
-
 var API = require('./stores/api/API');
 var ProcessActions = require('./actions/ProcessActions');
-var KeyBinder = require('./components/KeyBinder');
 var Observer = require('./components/Observer');
 var PureRender = require('./components/PureRender');
 var ProcessStore = require('./stores/ProcessStore');
@@ -26,7 +24,7 @@ var SHEET_SIZE = 10;
 
 var dummySubscription = {remove() {}};
 
-@KeyBinder
+
 @Observer
 @PureRender
 @Radium
@@ -70,7 +68,7 @@ class App extends Component {
     this._subscriptions.forEach(s => s.remove());
   }
 
-  _onToggleView = () => {
+  _onToggleViewClick = () => {
     if (this.state.threadListDisplay && this.state.passagesListDisplay) {
       this.setState({threadListDisplay: false});
     } else if (this.state.passagesListDisplay) {
@@ -100,7 +98,7 @@ class App extends Component {
             <Parallel />
             <span style={styles.logoName}>{' '}Skrik</span>
           </span>
-          <ShriekButton onClick={this._onToggleView}>
+          <ShriekButton onClick={this._onToggleViewClick}>
             <Toggler
               threadDisplay={this.state.threadListDisplay}
               passagesDisplay={this.state.passagesListDisplay}
@@ -126,6 +124,7 @@ class App extends Component {
             <RouteHandler
              params={this.props.params}
              passagesListDisplay={this.state.passagesListDisplay}
+             threadListDisplay={this.state.threadListDisplay}
             />
           </div>
         </div>

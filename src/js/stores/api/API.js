@@ -97,6 +97,7 @@ function requestThread(options) {
 
       data.forEach(chapterObject => {
         listRequest.push({
+          path: chapterObject.path,
           download_url: chapterObject.download_url,
           name: chapterObject.name,
           size: chapterObject.size

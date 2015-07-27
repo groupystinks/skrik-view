@@ -89,7 +89,6 @@ class ThreadStore extends BaseStore {
       };
 
       if (pagingInfo.isFetching) {
-        console.log('threads in ThreadStore: ', result);
         return result;
       }
 
