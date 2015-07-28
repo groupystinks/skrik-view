@@ -6,7 +6,7 @@ Title: 轉季
 
 Author: Lai Chia-Sheng
 
-authorChinese: 賴佳聖
+Author Ch: 賴佳聖
 
 Release Date: July, 2015
 
