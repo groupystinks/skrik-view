@@ -22,8 +22,10 @@ var RouteHandler = Router.RouteHandler;
 
 var SHEET_SIZE = 10;
 
-var dummySubscription = {remove() {}};
 
+/*
+ * TODO: disable Reactjs warning on force update
+*/
 
 @Observer
 @PureRender
@@ -40,7 +42,8 @@ class App extends Component {
     isLoading: false,
   };
 
-  _subscriptions = [dummySubscription];
+  // template of subscription
+  _subscriptions = [{remove() {}}];
 
 
   observe() {
@@ -77,7 +80,7 @@ class App extends Component {
       this.setState({threadListDisplay: true});
       this.setState({passagesListDisplay: true});
     }
-  }
+  };
 
   _onLogoClick = () => {
     window.location.reload();
