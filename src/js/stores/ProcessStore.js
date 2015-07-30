@@ -1,5 +1,3 @@
-var _ = require('lodash');
-var {Observable} = require('rx-lite');
 var ProcessAPI = require('./api/ProcessAPI');
 var BaseStore = require('./BaseStore');
 

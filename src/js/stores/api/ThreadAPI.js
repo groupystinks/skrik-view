@@ -1,10 +1,5 @@
-var path = require('path');
 var API = require('./API');
-var RSVP = require('rsvp');
 var _ = require('lodash');
-
-var Dispatcher = require('../../dispatcher/Dispatcher');
-var ActionType = require('../../constants/ActionType');
 
 declare class ListResult {
   items: Array<{

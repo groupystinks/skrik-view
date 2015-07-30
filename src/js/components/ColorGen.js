@@ -1,5 +1,4 @@
 var colorGen = require('tinytinycolor');
-var _ = require('lodash');
 
 class Color {
   constructor(stringOrColor) {

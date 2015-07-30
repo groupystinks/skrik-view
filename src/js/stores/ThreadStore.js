@@ -1,8 +1,5 @@
-var ActionType = require('../constants/ActionType');
 var BaseStore = require('./BaseStore');
 var ThreadAPI = require('./api/ThreadAPI');
-var _ = require('lodash');
-var {Observable} = require('rx-lite');
 
 
 type PagingInfo = {

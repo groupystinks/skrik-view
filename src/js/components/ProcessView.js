@@ -12,7 +12,6 @@ var ThreadActions = require('../actions/ThreadActions');
 var Observer = require('./Observer');
 var PureRender = require('./PureRender');
 var Scroller = require('./Scroller');
-var LoadingSprint = require('./LoadingSprint');
 var BlockPassageList = require('./BlockPassageList');
 var Colors = require('./ColorMe');
 
@@ -176,9 +175,7 @@ var styles = {
   passagesList: {
     borderRight: '1px solid ' + Colors.gray1,
     flex: 1,
-    height: '100%',
-    minWidth: '300px',
-    maxWidth: '400px',
+    height: '100%'
   },
 
   threadView: {

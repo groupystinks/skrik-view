@@ -5,7 +5,6 @@ var $ = require('jquery');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 var emitter = new EventEmitter();
-var pendingRequests = [];
 
 
 RSVP.on('error', function(error) {
@@ -76,7 +75,6 @@ function requestProcess() {
 function requestThread(options) {
   return new RSVP.Promise((resolve, reject) => {
     var listRequest = [];
-    var listResult = [];
     var dataUrl = 'https://api.github.com/repos/groupystinks/skrik-view/contents/data/';
     var dirUrl = urlUtil.resolve(dataUrl, options.title);
     var urlOptions = {

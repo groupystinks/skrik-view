@@ -2,7 +2,6 @@ var Colors = require('./ColorMe');
 var LineClamp = require('./LineClamp');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
-var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 var fileImage = require('../../images/file16.png');
 

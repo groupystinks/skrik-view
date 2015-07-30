@@ -1,7 +1,6 @@
 var Colors = require('./ColorMe');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
-var _ = require('lodash');
 var asap = require('asap');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 

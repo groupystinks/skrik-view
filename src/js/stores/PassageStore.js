@@ -1,8 +1,6 @@
-var ActionType = require('../constants/ActionType');
 var BaseStore = require('./BaseStore');
 var PassageAPI = require('./api/PassageAPI');
 var _ = require('lodash');
-var {Observable} = require('rx-lite');
 
 class PassageStore extends BaseStore {
   _passagesByName: Array<{

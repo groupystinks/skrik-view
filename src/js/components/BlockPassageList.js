@@ -68,6 +68,7 @@ class BlockPassageListItem extends Component {
 
   render(): any {
     var psg = this.props.passage;
+    // dectect firefox, disable clamp while in firefox.
     var is_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     return (
       <li
@@ -108,6 +109,7 @@ var styles = {
       lineHeight: 1.6,
       margin: '0 8px 8px 8px',
       borderBottom: '1px solid #eee',
+      minWidth: '300px',
     },
 
     rootFirst: {

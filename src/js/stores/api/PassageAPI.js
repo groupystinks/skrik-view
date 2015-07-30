@@ -1,6 +1,3 @@
-var RSVP = require('rsvp');
-var _ = require('lodash');
-
 var API = require('./API');
 var PassageConversion = require('../../components/PassageConversion');
 

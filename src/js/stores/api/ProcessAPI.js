@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var API = require('./API');
 
 declare class ListResult {

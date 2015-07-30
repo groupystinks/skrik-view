@@ -1,7 +1,5 @@
-var _ = require('lodash');
 var asap = require('asap');
 var {Component, PropTypes} = require('react');
-var {Observable} = require('rx-lite');
 var React = require('react/addons');
 var Router = require('react-router');
 var Radium = require('radium');
@@ -99,7 +97,7 @@ class App extends Component {
           <span onClick={this._onLogoClick} style={styles.logo}>
             <span style={styles.logoChinese}>吶喊{' '}</span>
             <Parallel />
-            <span style={styles.logoName}>{' '}Skrik</span>
+            <span style={styles.logoEng}>{' '}Skrik</span>
           </span>
           <ShriekButton onClick={this._onToggleViewClick}>
             <Toggler
@@ -155,15 +153,7 @@ var styles = {
     marginLeft: '12px',
   },
 
-  logoName: {
-    color: Colors.irishGreen.saturate(40),
-    marginRight: '12px',
-    '@media (max-width: 800px)': {
-      display: 'none',
-    },
-  },
-
-  logoNameChinese: {
+  logoEng: {
     color: Colors.irishGreen.saturate(40),
     marginRight: '12px',
     '@media (max-width: 800px)': {

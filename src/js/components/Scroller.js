@@ -9,7 +9,6 @@
 // Inspired by:
 // https://github.com/leoselig/jsFancyScroll/
 
-var Colors = require('./ColorMe');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
 var InfiniteScroll = require('./InfiniteScroll');

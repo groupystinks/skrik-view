@@ -1,7 +1,6 @@
 var Dispatcher = require('../dispatcher/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var {Observable} = require('rx-lite');
-var asap = require('asap');
 
 var CHANGE_EVENT = 'change';
 

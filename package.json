@@ -9,12 +9,13 @@
     "jquery": "^2.1.4",
     "lodash": "^3.10.0",
     "marked": "^0.3.3",
+    "mobile-detect": "^1.2.1",
     "radium": "^0.13.3",
     "react": "^0.13.2",
     "react-router": "^0.13.3",
     "rsvp": "^3.0.18",
     "rx-lite": "^2.5.2",
-    "tinytinycolor": "0.0.3",
+    "tinytinycolor": "0.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^3.1.7",
