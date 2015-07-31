@@ -1,7 +1,7 @@
 # Skrik View
 
 ## Tech used
-The Observalble structure is based on https://github.com/ianobermiller/nuclearmail
+The Observable(rxjs) structure is based on https://github.com/ianobermiller/nuclearmail
 - React flux
 - Radium inline style
 - RxJS

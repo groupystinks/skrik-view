@@ -143,12 +143,21 @@ class Scroller extends Component {
   }
 }
 
+var takeColumnOut = Radium.keyframes({
+  '0%': {flexGrow: 1},
+  '100%': {flexGrow: 0.00001,},
+});
+
+
 var styles = {
   displayNone: {
-    display: 'none',
+    flexGrow: 0.00001,
+    minWidth: 0,
+    animation: takeColumnOut + ' .3s 1 ease',
   },
 
   scroller: {
+    flexGrow: 1,
     overflow: 'hidden',
     position: 'relative',
   },
