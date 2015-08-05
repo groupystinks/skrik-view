@@ -42,10 +42,6 @@ var styles = {
     display: 'inherit',
   },
 
-  divs: {
-
-  },
-
   first: {
     width: '30px',
     height: '40px',

@@ -2,10 +2,6 @@
  *  By https://github.com/guillaumervls/react-infinite-scroll
  */
 
- /*
-  * TODO: something went wrong here, scroll to view is buggy.
- */
-
  var Radium = require('radium');
  var {Component, PropTypes, findDOMNode} = require('react');
 
