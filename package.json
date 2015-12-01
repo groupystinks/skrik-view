@@ -6,8 +6,9 @@
   "dependencies": {
     "asap": "^2.0.3",
     "es6-shim": "^0.31.0",
+    "eslint-config-airbnb": "0.0.8",
     "jquery": "^2.1.4",
-    "lodash": "^3.10.0",
+    "lodash": "^3.10.1",
     "marked": "^0.3.3",
     "mobile-detect": "^1.2.1",
     "radium": "^0.13.3",
@@ -18,10 +19,12 @@
     "tinytinycolor": "0.0.3"
   },
   "devDependencies": {
-    "babel-eslint": "^3.1.7",
+    "babel-eslint": "^4.1.5",
     "babel-loader": "^5.0.0",
-    "eslint": "^0.20.0",
-    "eslint-plugin-react": "^2.3.0",
+    "eslint": "1.2.1",
+    "eslint-config-airbnb": "0.0.8",
+    "eslint-loader": "1.0.0",
+    "eslint-plugin-react": "3.3.0",
     "expose-loader": "^0.6.0",
     "file-loader": "^0.8.4",
     "json-loader": "^0.5.2",

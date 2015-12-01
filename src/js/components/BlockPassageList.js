@@ -1,9 +1,10 @@
-var Colors = require('./ColorMe');
-var LineClamp = require('./LineClamp');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var _ = require('lodash');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+import React from 'react';
+import Colors from './ColorMe';
+import LineClamp from './LineClamp';
+import PureRender from './PureRender';
+import Radium from 'radium';
+import _ from 'lodash';
+import {Component, PropTypes, findDOMNode} from 'react/addons';
 
 @PureRender
 @Radium

@@ -1,9 +1,9 @@
-var router = require('../router');
+const router = require('../router');
 
-function select(passage: ?Object) {
+function select(passage) {
   if (passage) {
     router.transitionTo(
-      "thread",
+      'thread',
       {threadTitle: encodeURI(passage.title), passageName: encodeURI(passage.name)}
     );
   } else {

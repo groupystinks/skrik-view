@@ -1,9 +1,9 @@
-var router = require('../router');
+const router = require('../router');
 
 function select(process: ?Object) {
   if (process) {
     router.transitionTo(
-      "process",
+      'process',
       {threadTitle: encodeURI(process.name)}
     );
   } else {
