@@ -1,8 +1,8 @@
-var Colors = require('./ColorMe');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var asap = require('asap');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+import React, {Component, PropTypes, findDOMNode} from 'react/addons';
+import Colors from './ColorMe';
+import PureRender from './PureRender';
+import Radium from 'radium';
+import asap from 'asap';
 
 @PureRender
 @Radium
@@ -14,14 +14,14 @@ class PassageView extends Component {
     style: PropTypes.object,
   };
 
+  constructor() {
+    super();
+  }
+
   componentDidMount() {
     asap(()=> {
       findDOMNode(this).scrollIntoView(true);
     });
-  }
-
-  constructor() {
-    super();
   }
 
   render(): any {
@@ -37,7 +37,7 @@ class PassageView extends Component {
         <div style={styles.inner}>
           <div
             style={styles.bodyStyle}
-            className='readingContent'
+            className="readingContent"
             dangerouslySetInnerHTML={{
               __html: psg.body
             }}
@@ -48,7 +48,7 @@ class PassageView extends Component {
   }
 }
 
-var styles = {
+const styles = {
   root: {
     margin: '4px 12px 12px 12px',
   },

@@ -62,7 +62,7 @@ class PassageStore extends BaseStore {
       passagesList.forEach(passage => {
         this._passagesByName[passage.name] = passage;
       });
-      // console.log('in PassageStore: ', this._passagesByName);
+
       this._passagesByName.isFetching = false;
       this.emitChange();
     });
