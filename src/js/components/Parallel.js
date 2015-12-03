@@ -8,10 +8,10 @@ var {Component} = require('react/addons');
 class Parallel extends Component {
   render(): any {
     return (
-      <span style={styles.panWrapper}>
-        <div style={[styles.first, styles.divs]}>
-          <div style={[styles.second, styles.divs]}>
-            <div style={[styles.third, styles.divs]}></div>
+      <span>
+        <div style={styles.first}>
+          <div style={styles.second}>
+            <div style={styles.third}></div>
           </div>
         </div>
       </span>
@@ -38,10 +38,6 @@ var spinRemoveKeyframe = Radium.keyframes({
 });
 
 var styles = {
-  spanWrapper: {
-    display: 'inherit',
-  },
-
   first: {
     width: '30px',
     height: '40px',
