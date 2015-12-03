@@ -6,10 +6,10 @@ new WebpackDevServer(webpack(config), {
   contentBase: 'build/',
   hot: true,
   publicPath: config.output.publicPath,
-}).listen(8686, '0.0.0.0', function (err) {
+}).listen(8080, '0.0.0.0', function (err) {
   if (err) {
     console.log(err);
   }
 
-  console.log('Listening at 0.0.0.0:8686');
+  console.log('Listening at 0.0.0.0:8080');
 });

@@ -50,7 +50,7 @@ module.exports = function(options) {
     config.devtool = 'source-map';
     Array.prototype.unshift.call(
       config.entry,
-      'webpack-dev-server/client?http://0.0.0.0:8686',
+      'webpack-dev-server/client?http://0.0.0.0:8080',
       'webpack/hot/only-dev-server'
     );
     config.plugins = [
