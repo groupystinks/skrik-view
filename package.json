@@ -5,7 +5,7 @@
   "main": "App.js",
   "dependencies": {
     "asap": "^2.0.3",
-    "es6-shim": "^0.31.0",
+    "es6-shim": "0.34.4",
     "eslint-config-airbnb": "0.0.8",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
